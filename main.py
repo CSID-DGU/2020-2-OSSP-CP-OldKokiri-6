@@ -19,7 +19,8 @@ background_col = (235,235,235)
 
 high_score = 0
 
-screen = pygame.display.set_mode(scr_size)
+resized_screen = pygame.display.set_mode(scr_size, RESIZABLE)
+screen = resized_screen.copy()
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush")
 
@@ -332,7 +333,7 @@ def introscreen():
                 screen.blit(logo,logo_rect)
                 screen.blit(callout,callout_rect)
             temp_dino.draw()
-
+            resized_screen.blit(pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0,0))
             pygame.display.update()
 
         clock.tick(FPS)
@@ -454,7 +455,7 @@ def gameplay():
                 cacti.draw(screen)
                 pteras.draw(screen)
                 playerDino.draw()
-
+                resized_screen.blit(pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0,0))
                 pygame.display.update()
             clock.tick(FPS)
 
@@ -496,6 +497,7 @@ def gameplay():
                 if high_score != 0:
                     highsc.draw()
                     screen.blit(HI_image,HI_rect)
+                resized_screen.blit(pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0,0))
                 pygame.display.update()
             clock.tick(FPS)
 
