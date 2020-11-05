@@ -19,7 +19,8 @@ background_col = (235,235,235)
 
 high_score = 0
 
-screen = pygame.display.set_mode(scr_size)
+resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+screen = resized_screen.copy()
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush")
 
@@ -322,6 +323,11 @@ def introscreen():
                         temp_dino.isJumping = True
                         temp_dino.isBlinking = False
                         temp_dino.movement[1] = -1*temp_dino.jumpSpeed
+                if event.type == pygame.VIDEORESIZE: #최소해상도
+                    if event.w<600 and event.h<150:
+                        global resized_screen
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+
 
         temp_dino.update()
 
@@ -332,7 +338,7 @@ def introscreen():
                 screen.blit(logo,logo_rect)
                 screen.blit(callout,callout_rect)
             temp_dino.draw()
-
+            resized_screen.blit(pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0,0))
             pygame.display.update()
 
         clock.tick(FPS)
@@ -402,6 +408,11 @@ def gameplay():
                     if event.type == pygame.KEYUP:
                         if event.key == pygame.K_DOWN:
                             playerDino.isDucking = False
+                    
+                    if event.type == pygame.VIDEORESIZE: #최소해상도
+                        if event.w<600 and event.h<150:
+                            global resized_screen
+                            resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
             for c in cacti:
                 c.movement[0] = -1*gamespeed
                 if pygame.sprite.collide_mask(playerDino,c):
@@ -454,7 +465,7 @@ def gameplay():
                 cacti.draw(screen)
                 pteras.draw(screen)
                 playerDino.draw()
-
+                resized_screen.blit(pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0,0))
                 pygame.display.update()
             clock.tick(FPS)
 
@@ -490,12 +501,18 @@ def gameplay():
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
                             gameplay()
+
+                    if event.type == pygame.VIDEORESIZE: #최소해상도
+                        if event.w<600 and event.h<150:
+                            resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+
             highsc.update(high_score)
             if pygame.display.get_surface() != None:
                 disp_gameOver_msg(retbutton_image,gameover_image)
                 if high_score != 0:
                     highsc.draw()
                     screen.blit(HI_image,HI_rect)
+                resized_screen.blit(pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0,0))
                 pygame.display.update()
             clock.tick(FPS)
 
