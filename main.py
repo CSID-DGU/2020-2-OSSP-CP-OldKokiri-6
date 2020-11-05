@@ -340,7 +340,6 @@ def introscreen():
                         global resized_screen
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
-
         temp_dino.update()
 
         if pygame.display.get_surface() != None:
@@ -356,6 +355,7 @@ def introscreen():
         clock.tick(FPS)
         if temp_dino.isJumping == False and temp_dino.isBlinking == False:
             gameStart = True
+            gameplay()
 
 def gameplay():
     global high_score
@@ -528,10 +528,12 @@ def gameplay():
 
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
-                            gameplay()
+                            gameQuit = True
+                            introscreen()
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
-                        gameplay()
+                        gameQuit = True
+                        introscreen()
 
                     if event.type == pygame.VIDEORESIZE: #최소해상도
                         if event.w<600 and event.h<150:
@@ -553,6 +555,6 @@ def gameplay():
 def main():
     isGameQuit = introscreen()
     if not isGameQuit:
-        gameplay()
+        introscreen()
 
 main()
