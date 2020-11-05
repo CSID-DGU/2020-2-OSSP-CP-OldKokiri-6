@@ -24,9 +24,9 @@ screen = resized_screen.copy()
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush")
 
-# jump_sound = pygame.mixer.Sound('sprites/jump.wav')
-# die_sound = pygame.mixer.Sound('sprites/die.wav')
-# checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
+jump_sound = pygame.mixer.Sound('sprites/jump.wav')
+die_sound = pygame.mixer.Sound('sprites/die.wav')
+checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
 
 
 def load_image(
