@@ -1,5 +1,5 @@
 __author__ = "Shivam Shekhar"
-try = "kiho"
+kiho = "trying"
 
 import os
 import sys
