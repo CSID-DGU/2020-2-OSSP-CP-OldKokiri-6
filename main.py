@@ -28,6 +28,7 @@ jump_sound = pygame.mixer.Sound('sprites/jump.wav')
 die_sound = pygame.mixer.Sound('sprites/die.wav')
 checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
 
+
 def load_image(
     name,
     sizex=-1,
@@ -47,6 +48,7 @@ def load_image(
         image = pygame.transform.scale(image, (sizex, sizey))
 
     return (image, image.get_rect())
+
 
 def load_sprite_sheet(
         sheetname,
@@ -88,6 +90,7 @@ def load_sprite_sheet(
 
     return sprites,sprite_rect
 
+
 def disp_gameOver_msg(retbutton_image,gameover_image):
     retbutton_rect = retbutton_image.get_rect()
     retbutton_rect.centerx = width / 2
@@ -99,6 +102,7 @@ def disp_gameOver_msg(retbutton_image,gameover_image):
 
     screen.blit(retbutton_image, retbutton_rect)
     screen.blit(gameover_image, gameover_rect)
+
 
 def extractDigits(number):
     if number > -1:
@@ -113,6 +117,7 @@ def extractDigits(number):
             digits.append(0)
         digits.reverse()
         return digits
+
 
 class Dino():
     def __init__(self,sizex=-1,sizey=-1):
@@ -164,7 +169,7 @@ class Dino():
                 self.index = (self.index + 1)%2 + 2
 
         if self.isDead:
-           self.index = 4
+            self.index = 4
 
         if not self.isDucking:
             self.image = self.images[self.index]
@@ -184,6 +189,7 @@ class Dino():
 
         self.counter = (self.counter + 1)
 
+
 class Cactus(pygame.sprite.Sprite):
     def __init__(self,speed=5,sizex=-1,sizey=-1):
         pygame.sprite.Sprite.__init__(self,self.containers)
@@ -202,7 +208,9 @@ class Cactus(pygame.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
 
+
 class Ptera(pygame.sprite.Sprite):
+
     def __init__(self,speed=5,sizex=-1,sizey=-1):
         pygame.sprite.Sprite.__init__(self,self.containers)
         self.images,self.rect = load_sprite_sheet('ptera.png',2,1,sizex,sizey,-1)
@@ -323,11 +331,14 @@ def introscreen():
                         temp_dino.isJumping = True
                         temp_dino.isBlinking = False
                         temp_dino.movement[1] = -1*temp_dino.jumpSpeed
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    temp_dino.isJumping = True
+                    temp_dino.isBlinking = False
+                    temp_dino.movement[1] = -1*temp_dino.jumpSpeed
                 if event.type == pygame.VIDEORESIZE: #최소해상도
                     if event.w<600 and event.h<150:
                         global resized_screen
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-
 
         temp_dino.update()
 
@@ -344,6 +355,7 @@ def introscreen():
         clock.tick(FPS)
         if temp_dino.isJumping == False and temp_dino.isBlinking == False:
             gameStart = True
+            gameplay()
 
 def gameplay():
     global high_score
@@ -408,6 +420,22 @@ def gameplay():
                     if event.type == pygame.KEYUP:
                         if event.key == pygame.K_DOWN:
                             playerDino.isDucking = False
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if pygame.mouse.get_pressed() == (1, 0, 0) and playerDino.rect.bottom == int(0.98*height):
+                            # (mouse left button, wheel button, mouse right button)
+                            playerDino.isJumping = True
+                            if pygame.mixer.get_init() != None:
+                                jump_sound.play()
+                            playerDino.movement[1] = -1*playerDino.jumpSpeed
+
+                        if pygame.mouse.get_pressed() == (0, 0, 1):
+                            # (mouse left button, wheel button, mouse right button)
+                            if not (playerDino.isJumping and playerDino.isDead):
+                                playerDino.isDucking = True
+
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        playerDino.isDucking = False
                     
                     if event.type == pygame.VIDEORESIZE: #최소해상도
                         if event.w<600 and event.h<150:
@@ -500,7 +528,12 @@ def gameplay():
 
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
-                            gameplay()
+                            gameQuit = True
+                            introscreen()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        gameOver = False
+                        gameQuit = True
+                        introscreen()
 
                     if event.type == pygame.VIDEORESIZE: #최소해상도
                         if event.w<600 and event.h<150:
@@ -522,6 +555,6 @@ def gameplay():
 def main():
     isGameQuit = introscreen()
     if not isGameQuit:
-        gameplay()
+        introscreen()
 
 main()
