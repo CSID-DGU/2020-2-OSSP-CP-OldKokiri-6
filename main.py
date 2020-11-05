@@ -1,4 +1,5 @@
 __author__ = "Shivam Shekhar"
+try = "kiho"
 
 import os
 import sys
@@ -6,7 +7,7 @@ import pygame
 import random
 from pygame import *
 
-pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay 
+pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay
 pygame.init()
 
 scr_size = (width,height) = (600,150)
@@ -436,7 +437,7 @@ def gameplay():
 
                     if event.type == pygame.MOUSEBUTTONUP:
                         playerDino.isDucking = False
-                    
+
                     if event.type == pygame.VIDEORESIZE: #최소해상도
                         if event.w<600 and event.h<150:
                             global resized_screen
