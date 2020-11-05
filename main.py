@@ -19,7 +19,7 @@ background_col = (235,235,235)
 
 high_score = 0
 
-resized_screen = pygame.display.set_mode(scr_size, RESIZABLE)
+resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 screen = resized_screen.copy()
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush")
@@ -323,6 +323,11 @@ def introscreen():
                         temp_dino.isJumping = True
                         temp_dino.isBlinking = False
                         temp_dino.movement[1] = -1*temp_dino.jumpSpeed
+                if event.type == pygame.VIDEORESIZE: #최소해상도
+                    if event.w<600 and event.h<150:
+                        global resized_screen
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+
 
         temp_dino.update()
 
@@ -403,6 +408,11 @@ def gameplay():
                     if event.type == pygame.KEYUP:
                         if event.key == pygame.K_DOWN:
                             playerDino.isDucking = False
+                    
+                    if event.type == pygame.VIDEORESIZE: #최소해상도
+                        if event.w<600 and event.h<150:
+                            global resized_screen
+                            resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
             for c in cacti:
                 c.movement[0] = -1*gamespeed
                 if pygame.sprite.collide_mask(playerDino,c):
@@ -491,6 +501,11 @@ def gameplay():
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
                             gameplay()
+
+                    if event.type == pygame.VIDEORESIZE: #최소해상도
+                        if event.w<600 and event.h<150:
+                            resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+
             highsc.update(high_score)
             if pygame.display.get_surface() != None:
                 disp_gameOver_msg(retbutton_image,gameover_image)
