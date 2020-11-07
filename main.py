@@ -1,4 +1,5 @@
 __author__ = "Shivam Shekhar"
+made_by = "OldKokiri-6"
 
 import os
 import sys
@@ -6,27 +7,28 @@ import pygame
 import random
 from pygame import *
 
-pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay 
+pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay
 pygame.init()
 
-scr_size = (width,height) = (600,150)
-FPS = 60
-gravity = 0.6
+scr_size = (width,height) = (600,150)      #초기 화면사이즈
+FPS = 60                                   #캐릭터와 장애물이 움직이는 속도(단계별로 조정할 부분)
+gravity = 0.6                              #캐릭터 점프높이의 정도(gravity가 커질수록 점프하는 폭이 작아짐)
 
 black = (0,0,0)
 white = (255,255,255)
-background_col = (235,235,235)
+background_col = (235,235,235)             #배경화면 RGB컬러
 
 high_score = 0
 
 resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 screen = resized_screen.copy()
 clock = pygame.time.Clock()
-pygame.display.set_caption("T-Rex Rush")
+pygame.display.set_caption("T-Rex Rush by_OldKokiri")     #게임창의 캡션
 
 jump_sound = pygame.mixer.Sound('sprites/jump.wav')
 die_sound = pygame.mixer.Sound('sprites/die.wav')
 checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
+background_music = pygame.mixer.Sound('sprites/t-rex_bgm2.mp3') #배경음악 지정-363째줄 코드에서 시작, 505째줄 코드에서 멈춤
 
 
 def load_image(
@@ -358,6 +360,7 @@ def introscreen():
             gameplay()
 
 def gameplay():
+    background_music.play()   #배경음악 실행
     global high_score
     gamespeed = 4
     startMenu = False
@@ -436,7 +439,7 @@ def gameplay():
 
                     if event.type == pygame.MOUSEBUTTONUP:
                         playerDino.isDucking = False
-                    
+
                     if event.type == pygame.VIDEORESIZE: #최소해상도
                         if event.w<600 and event.h<150:
                             global resized_screen
@@ -499,6 +502,7 @@ def gameplay():
 
             if playerDino.isDead:
                 gameOver = True
+                background_music.stop()          #죽으면 배경음악 멈춤
                 if playerDino.score > high_score:
                     high_score = playerDino.score
 
