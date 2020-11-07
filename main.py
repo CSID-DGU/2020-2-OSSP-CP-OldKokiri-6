@@ -324,7 +324,7 @@ def introscreen():
                         temp_dino.isBlinking = False
                         temp_dino.movement[1] = -1*temp_dino.jumpSpeed
                 if event.type == pygame.VIDEORESIZE: #최소해상도
-                    if event.w<600 and event.h<150:
+                    if (event.w<600 and event.h<150) or event.w<600 or event.h<150:
                         global resized_screen
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
@@ -410,7 +410,7 @@ def gameplay():
                             playerDino.isDucking = False
                     
                     if event.type == pygame.VIDEORESIZE: #최소해상도
-                        if event.w<600 and event.h<150:
+                        if (event.w<600 and event.h<150) or event.w<600 or event.h<150:
                             global resized_screen
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
             for c in cacti:
@@ -502,8 +502,8 @@ def gameplay():
                             gameOver = False
                             gameplay()
 
-                    if event.type == pygame.VIDEORESIZE: #최소해상도
-                        if event.w<600 and event.h<150:
+                    if event.type == pygame.VIDEORESIZE: #최소해상도 #버그있음
+                        if (event.w<600 and event.h<150) or event.w<600 or event.h<150:
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             highsc.update(high_score)
