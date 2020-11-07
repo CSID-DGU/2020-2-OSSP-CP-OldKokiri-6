@@ -1,6 +1,5 @@
 __author__ = "Shivam Shekhar"
 made_by = "OldKokiri-6"
-abcde = "test1"
 
 import os
 import sys
