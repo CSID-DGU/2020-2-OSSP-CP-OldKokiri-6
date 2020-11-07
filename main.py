@@ -10,9 +10,9 @@ from pygame import *
 pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay
 pygame.init()
 
-scr_size = (width,height) = (600,150)      #초기 화면사이즈
+scr_size = (width,height) = (600,200)      #초기 화면사이즈
 FPS = 60                                   #캐릭터와 장애물이 움직이는 속도(단계별로 조정할 부분)
-gravity = 0.6                              #캐릭터 점프높이의 정도(gravity가 커질수록 점프하는 폭이 작아짐)
+gravity = 0.65                              #캐릭터 점프높이의 정도(gravity가 커질수록 점프하는 폭이 작아짐)
 
 black = (0,0,0)
 white = (255,255,255)
@@ -28,7 +28,7 @@ pygame.display.set_caption("T-Rex Rush by_OldKokiri")     #게임창의 캡션
 jump_sound = pygame.mixer.Sound('sprites/jump.wav')
 die_sound = pygame.mixer.Sound('sprites/die.wav')
 checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
-background_music = pygame.mixer.Sound('sprites/t-rex_bgm2.mp3') #배경음악 지정-363째줄 코드에서 시작, 505째줄 코드에서 멈춤
+background_music = pygame.mixer.Sound('sprites/t-rex_bgm1.mp3') #배경음악 지정-363째줄 코드에서 시작, 505째줄 코드에서 멈춤
 
 
 def load_image(
@@ -409,14 +409,14 @@ def gameplay():
                         gameOver = True
 
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
+                        if event.key == pygame.K_SPACE:    #스페이스 누르는 시점에 공룡이 땅에 닿아있으면 점프한다.
                             if playerDino.rect.bottom == int(0.98*height):
                                 playerDino.isJumping = True
                                 if pygame.mixer.get_init() != None:
                                     jump_sound.play()
                                 playerDino.movement[1] = -1*playerDino.jumpSpeed
 
-                        if event.key == pygame.K_DOWN:
+                        if event.key == pygame.K_DOWN:    #아래방향키를 누르는 시점에 공룡이 점프중이지 않으면 숙인다.
                             if not (playerDino.isJumping and playerDino.isDead):
                                 playerDino.isDucking = True
 
@@ -506,7 +506,7 @@ def gameplay():
                 if playerDino.score > high_score:
                     high_score = playerDino.score
 
-            if counter%700 == 699:
+            if counter%700 == 699:               #게임스피드 조작부분(gamespeed아래에 메뉴창 뜨게하는 코드 추가할 것)
                 new_ground.speed -= 1
                 gamespeed += 1
 
@@ -540,7 +540,7 @@ def gameplay():
                         introscreen()
 
                     if event.type == pygame.VIDEORESIZE: #최소해상도
-                        if event.w<600 and event.h<150:
+                        if event.w<600 or event.h<150:
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             highsc.update(high_score)
