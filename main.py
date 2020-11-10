@@ -7,6 +7,9 @@ from src.ptera import *
 from src.ground import *
 from src.cloud import *
 from src.scoreboard import *
+from db_interface import InterfDB
+
+db = InterfDB("score.db")
 
 
 def introscreen():
@@ -64,6 +67,9 @@ def introscreen():
         if temp_dino.isJumping == False and temp_dino.isBlinking == False:
             gameStart = True
             gameplay()
+
+    pygame.quit()
+    quit()
 
 
 def gameplay():
@@ -213,6 +219,8 @@ def gameplay():
                 background_music.stop()  # 죽으면 배경음악 멈춤
                 if playerDino.score > high_score:
                     high_score = playerDino.score
+                db.query_db(f"insert into user(username, score) values ('nnn', '{playerDino.score}');")
+                db.commit()
 
             if counter % 700 == 699:  # 게임스피드 조작부분(gamespeed아래에 메뉴창 뜨게하는 코드 추가할 것)
                 new_ground.speed -= 1
@@ -241,11 +249,13 @@ def gameplay():
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
                             gameQuit = True
-                            introscreen()
+                            board()
+                            # introscreen()
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
-                        introscreen()
+                        board()
+                        # introscreen()
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                         if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
@@ -266,7 +276,52 @@ def gameplay():
     quit()
 
 
+def board():
+    result = db.query_db("select score from user order by score desc;")
+    gameQuit = False
+
+    while not gameQuit:
+
+        if pygame.display.get_surface() is None:
+            gameQuit = True
+
+        else:
+            screen.fill(background_col)
+
+            for i, score in enumerate(result):
+                board = Scoreboard(width * 0.5, height * (0.5 + 0.1 * i))
+                board.update(score['score'])
+                board.draw()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    gameQuit = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                        gameQuit = True
+                        introscreen()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    gameQuit = True
+                    introscreen()
+
+                if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
+                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                        global resized_screen
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+
+            resized_screen.blit(
+                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
+
+            pygame.display.update()
+        clock.tick(FPS)
+
+    pygame.quit()
+    quit()
+
+
 def main():
+    db.init_db()
     isGameQuit = introscreen()
     if not isGameQuit:
         introscreen()
