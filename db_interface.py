@@ -23,3 +23,6 @@ class InterfDB:
         result = [dict((cursor.description[idx][0], value) for idx, value in enumerate(row)) \
                   for row in cursor.fetchall()]
         return (result[0] if result else None) if one else result
+
+    def commit(self):
+        self.db.commit()
