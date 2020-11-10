@@ -11,41 +11,6 @@ from db_interface import InterfDB
 
 db = InterfDB("score.db")
 
-def board():
-    result = db.query_db("select score from user order by score desc;")
-    gameQuit = False
-
-    while not gameQuit:
-
-        if pygame.display.get_surface() is None:
-            gameQuit = True
-
-        else:
-            screen.fill(background_col)
-
-            for i, score in enumerate(result):
-                board = Scoreboard(width * 0.5, height * (0.5 + 0.1 * i))
-                board.update(score['score'])
-                board.draw()
-
-            # board.draw()
-
-            resized_screen.blit(
-                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    gameQuit = True
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
-                        gameQuit = True
-                        introscreen()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    gameQuit = True
-                    introscreen()
-
-            pygame.display.update()
-        clock.tick(FPS)
 
 def introscreen():
     temp_dino = Dino(44, 47)
@@ -102,6 +67,9 @@ def introscreen():
         if temp_dino.isJumping == False and temp_dino.isBlinking == False:
             gameStart = True
             gameplay()
+
+    pygame.quit()
+    quit()
 
 
 def gameplay():
@@ -303,6 +271,50 @@ def gameplay():
                     pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
                 pygame.display.update()
             clock.tick(FPS)
+
+    pygame.quit()
+    quit()
+
+
+def board():
+    result = db.query_db("select score from user order by score desc;")
+    gameQuit = False
+
+    while not gameQuit:
+
+        if pygame.display.get_surface() is None:
+            gameQuit = True
+
+        else:
+            screen.fill(background_col)
+
+            for i, score in enumerate(result):
+                board = Scoreboard(width * 0.5, height * (0.5 + 0.1 * i))
+                board.update(score['score'])
+                board.draw()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    gameQuit = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
+                        gameQuit = True
+                        introscreen()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    gameQuit = True
+                    introscreen()
+
+                if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
+                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                        global resized_screen
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+
+            resized_screen.blit(
+                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
+
+            pygame.display.update()
+        clock.tick(FPS)
 
     pygame.quit()
     quit()
