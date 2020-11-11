@@ -79,6 +79,10 @@ def gameplay():
     startMenu = False
     gameOver = False
     gameQuit = False
+    ###
+    life = 2
+    paused = False
+    ###
     playerDino = Dino(44, 47)
     new_ground = Ground(-1 * gamespeed)
     scb = Scoreboard()
@@ -133,6 +137,9 @@ def gameplay():
                             if not (playerDino.isJumping and playerDino.isDead):
                                 playerDino.isDucking = True
 
+                        if event.key == pygame.K_ESCAPE:
+                            paused = not paused
+
                     if event.type == pygame.KEYUP:
                         if event.key == pygame.K_DOWN:
                             playerDino.isDucking = False
@@ -157,76 +164,96 @@ def gameplay():
                         if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
                             global resized_screen
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-            for c in cacti:
-                c.movement[0] = -1 * gamespeed
-                if pygame.sprite.collide_mask(playerDino, c):
-                    playerDino.isDead = True
-                    if pygame.mixer.get_init() != None:
-                        die_sound.play()
 
-            for p in pteras:
-                p.movement[0] = -1 * gamespeed
-                if pygame.sprite.collide_mask(playerDino, p):
-                    playerDino.isDead = True
-                    if pygame.mixer.get_init() != None:
-                        die_sound.play()
+            if not paused:
+                for c in cacti:
+                    c.movement[0] = -1 * gamespeed
+                    if pygame.sprite.collide_mask(playerDino, c):
+                        life -= 1
+                        if life == 0:
+                            playerDino.isDead = True
+                        # playerDino.isDead = True
+                        if pygame.mixer.get_init() != None:
+                            die_sound.play()
 
-            if len(cacti) < 2:
-                if len(cacti) == 0:
-                    last_obstacle.empty()
-                    last_obstacle.add(Cactus(gamespeed, 40, 40))
-                else:
-                    for l in last_obstacle:
-                        if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
-                            last_obstacle.empty()
-                            last_obstacle.add(Cactus(gamespeed, 40, 40))
+                for p in pteras:
+                    p.movement[0] = -1 * gamespeed
+                    if pygame.sprite.collide_mask(playerDino, p):
+                        life -= 1
+                        if life == 0:
+                            playerDino.isDead = True
+                        # playerDino.isDead = True
+                        if pygame.mixer.get_init() != None:
+                            die_sound.play()
 
-            if len(pteras) == 0 and random.randrange(0, 200) == 10 and counter > 500:
-                for l in last_obstacle:
-                    if l.rect.right < width * 0.8:
+                if len(cacti) < 2:
+                    if len(cacti) == 0:
                         last_obstacle.empty()
-                        last_obstacle.add(Ptera(gamespeed, 46, 40))
+                        last_obstacle.add(Cactus(gamespeed, 40, 40))
+                    else:
+                        for l in last_obstacle:
+                            if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
+                                last_obstacle.empty()
+                                last_obstacle.add(Cactus(gamespeed, 40, 40))
 
-            if len(clouds) < 5 and random.randrange(0, 300) == 10:
-                Cloud(width, random.randrange(height / 5, height / 2))
+                if len(pteras) == 0 and random.randrange(0, 200) == 10 and counter > 500:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(Ptera(gamespeed, 46, 40))
 
-            playerDino.update()
-            cacti.update()
-            pteras.update()
-            clouds.update()
-            new_ground.update()
-            scb.update(playerDino.score)
-            highsc.update(high_score)
+                if len(clouds) < 5 and random.randrange(0, 300) == 10:
+                    Cloud(width, random.randrange(height / 5, height / 2))
 
-            if pygame.display.get_surface() != None:
-                screen.fill(background_col)
-                new_ground.draw()
-                clouds.draw(screen)
-                scb.draw()
-                if high_score != 0:
-                    highsc.draw()
-                    screen.blit(HI_image, HI_rect)
-                cacti.draw(screen)
-                pteras.draw(screen)
-                playerDino.draw()
-                resized_screen.blit(
-                    pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
-                pygame.display.update()
-            clock.tick(FPS)
+                playerDino.update()
+                cacti.update()
+                pteras.update()
+                clouds.update()
+                new_ground.update()
+                scb.update(playerDino.score)
+                highsc.update(high_score)
 
-            if playerDino.isDead:
-                gameOver = True
-                background_music.stop()  # 죽으면 배경음악 멈춤
-                if playerDino.score > high_score:
-                    high_score = playerDino.score
-                db.query_db(f"insert into user(username, score) values ('nnn', '{playerDino.score}');")
-                db.commit()
+                if pygame.display.get_surface() != None:
+                    screen.fill(background_col)
+                    new_ground.draw()
+                    clouds.draw(screen)
+                    scb.draw()
+                    if high_score != 0:
+                        highsc.draw()
+                        screen.blit(HI_image, HI_rect)
+                    cacti.draw(screen)
+                    pteras.draw(screen)
+                    playerDino.draw()
+                    resized_screen.blit(
+                        pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
+                    pygame.display.update()
+                clock.tick(FPS)
 
-            if counter % 700 == 699:  # 게임스피드 조작부분(gamespeed아래에 메뉴창 뜨게하는 코드 추가할 것)
-                new_ground.speed -= 1
-                gamespeed += 1
+                if playerDino.isDead:
+                    gameOver = True
+                    background_music.stop()  # 죽으면 배경음악 멈춤
+                    if playerDino.score > high_score:
+                        high_score = playerDino.score
+                    db.query_db(f"insert into user(username, score) values ('nnn', '{playerDino.score}');")
+                    db.commit()
 
-            counter = (counter + 1)
+                if counter % 700 == 699:  # 게임스피드 조작부분(gamespeed아래에 메뉴창 뜨게하는 코드 추가할 것)
+                    new_ground.speed -= 1
+                    gamespeed += 1
+
+                counter = (counter + 1)
+
+            else: # if paused
+                if pygame.display.get_surface() is not None:
+                    screen.fill((200, 200, 200))
+                    retbutton_rect.centerx = width / 2
+                    retbutton_rect.top = height * 0.52
+                    screen.blit(retbutton_image, retbutton_rect)
+                    resized_screen.blit(
+                        pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
+                        (0, 0))
+                    pygame.display.update()
+                clock.tick(FPS)
 
         if gameQuit:
             break
@@ -288,10 +315,26 @@ def board():
         else:
             screen.fill(background_col)
 
+            ### username setting
+            temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
+            HI_image = pygame.Surface((22, int(11 * 6 / 5)))
+            HI_rect = HI_image.get_rect()
+            HI_image.fill(background_col)
+            HI_image.blit(temp_images[10], temp_rect)
+            temp_rect.left += temp_rect.width
+            HI_image.blit(temp_images[11], temp_rect)
+            ###
+
             for i, score in enumerate(result):
                 board = Scoreboard(width * 0.5, height * (0.5 + 0.1 * i))
                 board.update(score['score'])
                 board.draw()
+
+                ### username drawing
+                HI_rect.top = height * (0.5 + 0.1 * i)
+                HI_rect.left = width * 0.3
+                screen.blit(HI_image, HI_rect)
+                ###
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
