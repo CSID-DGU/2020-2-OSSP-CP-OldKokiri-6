@@ -13,6 +13,7 @@ db = InterfDB("score.db")
 
 
 def introscreen():
+    background_music.stop()
     temp_dino = Dino(44, 47)
     temp_dino.isBlinking = True
     gameStart = False
@@ -73,7 +74,7 @@ def introscreen():
 
 
 def gameplay():
-    background_music.play()  # 배경음악 실행
+    background_music.play(loops=True)  # 배경음악 실행
     global high_score
     gamespeed = 4
     startMenu = False
