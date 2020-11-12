@@ -371,6 +371,7 @@ def pausing():
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        pygame.mixer.music.unpause() # pausing상태에서 다시 esc누르면 배경음악 일시정지 해제
                         return False
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
