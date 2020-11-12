@@ -139,6 +139,7 @@ def gameplay():
 
                         if event.key == pygame.K_ESCAPE:
                             paused = not paused
+                            paused = pausing()
 
                     if event.type == pygame.KEYUP:
                         if event.key == pygame.K_DOWN:
@@ -243,18 +244,6 @@ def gameplay():
 
                 counter = (counter + 1)
 
-            else: # if paused
-                if pygame.display.get_surface() is not None:
-                    screen.fill((200, 200, 200))
-                    retbutton_rect.centerx = width / 2
-                    retbutton_rect.top = height * 0.52
-                    screen.blit(retbutton_image, retbutton_rect)
-                    resized_screen.blit(
-                        pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
-                        (0, 0))
-                    pygame.display.update()
-                clock.tick(FPS)
-
         if gameQuit:
             break
 
@@ -356,6 +345,55 @@ def board():
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
 
+            pygame.display.update()
+        clock.tick(FPS)
+
+    pygame.quit()
+    quit()
+
+
+def pausing():
+    gameQuit = False
+
+    retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
+    resume_image, resume_rect = load_image('replay_button.png', 35, 31, -1)
+
+    while not gameQuit:
+        if pygame.display.get_surface() is None:
+            print("Couldn't load display surface")
+            gameQuit = True
+        else:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    gameQuit = True
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return False
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if pygame.mouse.get_pressed() == (1, 0, 0):
+                        x, y = event.pos
+                        if retbutton_rect.collidepoint(x, y):
+                            introscreen()
+                        if resume_rect.collidepoint(x, y):
+                            return False
+
+                if event.type == pygame.VIDEORESIZE:
+                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                        global resized_screen
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+
+            screen.fill((200, 200, 200))
+            retbutton_rect.centerx = width * 0.4
+            retbutton_rect.top = height * 0.52
+            resume_rect.centerx = width * 0.6
+            resume_rect.top = height * 0.52
+            screen.blit(retbutton_image, retbutton_rect)
+            screen.blit(resume_image, resume_rect)
+            resized_screen.blit(
+                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
+                (0, 0))
             pygame.display.update()
         clock.tick(FPS)
 
