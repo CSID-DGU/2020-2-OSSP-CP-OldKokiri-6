@@ -13,7 +13,7 @@ db = InterfDB("score.db")
 
 
 def introscreen():
-    background_music.stop()
+    pygame.mixer.music.stop()
     temp_dino = Dino(44, 47)
     temp_dino.isBlinking = True
     gameStart = False
@@ -74,7 +74,7 @@ def introscreen():
 
 
 def gameplay():
-    background_music.play(loops=True)  # 배경음악 실행
+    pygame.mixer.music.play(-1) # 배경음악 실행
     global high_score
     gamespeed = 4
     startMenu = False
@@ -233,7 +233,7 @@ def gameplay():
 
                 if playerDino.isDead:
                     gameOver = True
-                    background_music.stop()  # 죽으면 배경음악 멈춤
+                    pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
                     db.query_db(f"insert into user(username, score) values ('nnn', '{playerDino.score}');")
@@ -355,6 +355,7 @@ def board():
 
 def pausing():
     gameQuit = False
+    pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     resume_image, resume_rect = load_image('replay_button.png', 35, 31, -1)
@@ -370,6 +371,7 @@ def pausing():
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        pygame.mixer.music.unpause() # pausing상태에서 다시 esc누르면 배경음악 일시정지 해제
                         return False
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -378,6 +380,7 @@ def pausing():
                         if retbutton_rect.collidepoint(x, y):
                             introscreen()
                         if resume_rect.collidepoint(x, y):
+                            pygame.mixer.music.unpause() # pausing상태에서 오른쪽의 아이콘 클릭하면 배경음악 일시정지 해제
                             return False
 
                 if event.type == pygame.VIDEORESIZE:

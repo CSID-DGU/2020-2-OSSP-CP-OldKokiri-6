@@ -26,7 +26,8 @@ pygame.display.set_caption("T-Rex Rush by_OldKokiri")     #게임창의 캡션
 jump_sound = pygame.mixer.Sound('sprites/jump.wav')
 die_sound = pygame.mixer.Sound('sprites/die.wav')
 checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
-background_music = pygame.mixer.Sound('sprites/t-rex_bgm1.mp3') #배경음악 지정-363째줄 코드에서 시작, 505째줄 코드에서 멈춤
+#background_music = pygame.mixer.Sound('sprites/t-rex_bgm1.mp3') #일시정지 구현을 위해 기존함수 대신 아랫줄의 다른함수 사용
+pygame.mixer.music.load('sprites/t-rex_bgm1.mp3') #배경음악 지정
 
 
 def load_image(
