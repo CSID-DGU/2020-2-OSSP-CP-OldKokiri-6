@@ -81,9 +81,9 @@ def gameplay():
     gameOver = False
     gameQuit = False
     ###
-    life = 2
-    paused = False
+    life = 3
     ###
+    paused = False
     playerDino = Dino(44, 47)
     new_ground = Ground(-1 * gamespeed)
     scb = Scoreboard()
@@ -171,6 +171,7 @@ def gameplay():
                 for c in cacti:
                     c.movement[0] = -1 * gamespeed
                     if pygame.sprite.collide_mask(playerDino, c):
+                        c.kill()
                         life -= 1
                         if life == 0:
                             playerDino.isDead = True
@@ -181,6 +182,7 @@ def gameplay():
                 for p in pteras:
                     p.movement[0] = -1 * gamespeed
                     if pygame.sprite.collide_mask(playerDino, p):
+                        p.kill()
                         life -= 1
                         if life == 0:
                             playerDino.isDead = True
