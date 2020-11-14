@@ -54,6 +54,12 @@ class Dino():
         if self.isDead:
             self.index = 4
 
+        if self.collision_immune:
+            if self.counter % 10 == 0:
+                self.index = 4
+            # else:
+            #     self.image = background_col image
+
         if not self.isDucking:
             self.image = self.images[self.index]
             self.rect.width = self.stand_pos_width
