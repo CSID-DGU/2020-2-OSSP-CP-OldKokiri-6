@@ -355,11 +355,16 @@ def board():
 
 def pausing():
     gameQuit = False
+
+    global resized_screen
     pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     resume_image, resume_rect = load_image('replay_button.png', 35, 31, -1)
-
+    ###
+    resized_retbutton_image, resized_retbutton_rect  = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_resume_image, resized_resume_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    ###
     while not gameQuit:
         if pygame.display.get_surface() is None:
             print("Couldn't load display surface")
@@ -377,15 +382,17 @@ def pausing():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed() == (1, 0, 0):
                         x, y = event.pos
-                        if retbutton_rect.collidepoint(x, y):
+                        if resized_retbutton_rect.collidepoint(x, y):
                             introscreen()
-                        if resume_rect.collidepoint(x, y):
+
+                        if resized_resume_rect.collidepoint(x, y):
                             pygame.mixer.music.unpause() # pausing상태에서 오른쪽의 아이콘 클릭하면 배경음악 일시정지 해제
+
                             return False
 
                 if event.type == pygame.VIDEORESIZE:
                     if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-                        global resized_screen
+                        
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             screen.fill((200, 200, 200))
@@ -393,6 +400,14 @@ def pausing():
             retbutton_rect.top = height * 0.52
             resume_rect.centerx = width * 0.6
             resume_rect.top = height * 0.52
+            ###
+            resized_retbutton_rect.centerx = resized_screen.get_width() * 0.4
+            resized_retbutton_rect.top = resized_screen.get_height() * 0.52
+            resized_resume_rect.centerx = resized_screen.get_width() * 0.6
+            resized_resume_rect.top = resized_screen.get_height() * 0.52
+            resized_screen.blit(retbutton_image, resized_retbutton_rect)
+            resized_screen.blit(resume_image, resized_resume_rect)
+            ###
             screen.blit(retbutton_image, retbutton_rect)
             screen.blit(resume_image, resume_rect)
             resized_screen.blit(
