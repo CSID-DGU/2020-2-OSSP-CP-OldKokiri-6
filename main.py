@@ -170,25 +170,35 @@ def gameplay():
             if not paused:
                 for c in cacti:
                     c.movement[0] = -1 * gamespeed
-                    if pygame.sprite.collide_mask(playerDino, c):
-                        c.kill()
-                        life -= 1
-                        if life == 0:
-                            playerDino.isDead = True
-                        # playerDino.isDead = True
-                        if pygame.mixer.get_init() != None:
-                            die_sound.play()
+                    if not playerDino.collision_immune:
+                        if pygame.sprite.collide_mask(playerDino, c):
+                            playerDino.collision_immune = True
+                            life -= 1
+                            collision_time = pygame.time.get_ticks()
+                            if life == 0:
+                                playerDino.isDead = True
+                            if pygame.mixer.get_init() is not None:
+                                die_sound.play()
+                    else:
+                        immune_time = pygame.time.get_ticks()
+                        if immune_time - collision_time > 300:
+                            playerDino.collision_immune = False
 
                 for p in pteras:
                     p.movement[0] = -1 * gamespeed
-                    if pygame.sprite.collide_mask(playerDino, p):
-                        p.kill()
-                        life -= 1
-                        if life == 0:
-                            playerDino.isDead = True
-                        # playerDino.isDead = True
-                        if pygame.mixer.get_init() != None:
-                            die_sound.play()
+                    if not playerDino.collision_immune:
+                        if pygame.sprite.collide_mask(playerDino, p):
+                            playerDino.collision_immune = True
+                            life -= 1
+                            collision_time = pygame.time.get_ticks()
+                            if life == 0:
+                                playerDino.isDead = True
+                            if pygame.mixer.get_init() is not None:
+                                die_sound.play()
+                    else:
+                        immune_time = pygame.time.get_ticks()
+                        if immune_time - collision_time > 300:
+                            playerDino.collision_immune = False
 
                 if len(cacti) < 2:
                     if len(cacti) == 0:
