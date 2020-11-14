@@ -392,7 +392,7 @@ def pausing():
 
                 if event.type == pygame.VIDEORESIZE:
                     if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-                        
+
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             screen.fill((200, 200, 200))
