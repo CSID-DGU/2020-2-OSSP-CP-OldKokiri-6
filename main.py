@@ -412,61 +412,50 @@ def pausing():
     quit()
 
 def typescore():
+    done = False
+    active = True
+
+    letternum_restriction=3
     screen = pygame.display.set_mode((600, 200))
     clock = pygame.time.Clock()
     input_box = pygame.Rect(250, 100, 300, 40)
     #color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
-    color = color_active
-    active = True
+    color = pygame.Color('dodgerblue2')
+
     text = ''
-    done = False
     text2 = font.render("플레이어 이름을 입력해주세요", True, (28,0,0))
-    letternum_restriction=3
 
     while not done:
         for event in pygame.event.get():
-            if len(text)==letternum_restriction and event.type == pygame.QUIT:
-                done = True
-            '''
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # If the user clicked on the input_box rect.
-                if input_box.collidepoint(event.pos):
-                    # Toggle the active variable.
-                    active = not active
-                else:
-                    active = False
-            
-                # Change the current color of the input box.
-                color = color_active if active else color_inactive
-            '''
+            if event.type == pygame.QUIT:
+                if len(text)==letternum_restriction:
+                    done = True
+
             if event.type == pygame.KEYDOWN:
-                if active:
-                    if event.key == pygame.K_RETURN:
-                        global gamername
-                        gamername=text.upper()
-                        done=True
-                    elif event.key == pygame.K_BACKSPACE:
-                        text = text[:-1]
-                    else:
+                #if active:
+                if event.key == pygame.K_RETURN:
+                    global gamername
+                    gamername=text.upper()
+                    done=True
+                elif event.key == pygame.K_BACKSPACE:
+                    text = text[:-1]
+                else:
+                    if event.unicode.isalpha()==True:
                         if len(text)<letternum_restriction:
                             text += event.unicode
 
         screen.fill((255,255 ,255))
-        # Render the current text.
         txt_surface = font.render(text.upper(), True, color)
-        # Resize the box if the text is too long.
         width = max(100, txt_surface.get_width()+10)
         input_box.w = width
-        # Blit the text.
+
         screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
         screen.blit(text2,(80,50))
-        # Blit the input_box rect.
+
         pygame.draw.rect(screen, color, input_box, 2)
 
         pygame.display.flip()
         clock.tick(30)
-        
 
 
 def main():
