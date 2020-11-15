@@ -181,7 +181,7 @@ def gameplay():
                                 die_sound.play()
                     else:
                         immune_time = pygame.time.get_ticks()
-                        if immune_time - collision_time > 300:
+                        if immune_time - collision_time > 500:
                             playerDino.collision_immune = False
 
                 for p in pteras:
@@ -197,7 +197,7 @@ def gameplay():
                                 die_sound.play()
                     else:
                         immune_time = pygame.time.get_ticks()
-                        if immune_time - collision_time > 300:
+                        if immune_time - collision_time > 500:
                             playerDino.collision_immune = False
 
                 if len(cacti) < 2:
