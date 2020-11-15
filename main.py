@@ -422,10 +422,11 @@ def typescore():
     text = ''
     done = False
     text2 = font.render("플레이어 이름을 입력해주세요", True, (28,0,0))
+    letternum_restriction=3
 
     while not done:
         for event in pygame.event.get():
-            if len(text)==3 and event.type == pygame.QUIT:
+            if len(text)==letternum_restriction and event.type == pygame.QUIT:
                 done = True
             '''
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -443,17 +444,17 @@ def typescore():
                 if active:
                     if event.key == pygame.K_RETURN:
                         global gamername
-                        gamername=text
+                        gamername=text.upper()
                         done=True
                     elif event.key == pygame.K_BACKSPACE:
                         text = text[:-1]
                     else:
-                        if len(text)<3:
+                        if len(text)<letternum_restriction:
                             text += event.unicode
 
         screen.fill((255,255 ,255))
         # Render the current text.
-        txt_surface = font.render(text, True, color)
+        txt_surface = font.render(text.upper(), True, color)
         # Resize the box if the text is too long.
         width = max(100, txt_surface.get_width()+10)
         input_box.w = width
