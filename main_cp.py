@@ -17,7 +17,7 @@ gravity = 0.65                              #캐릭터 점프높이의 정도(gr
 black = (0,0,0)
 white = (255,255,255)
 background_col = (235,235,235)             #배경화면 RGB컬러
-
+font = pygame.font.Font('DungGeunMo.ttf', 32)
 high_score = 0
 
 resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
