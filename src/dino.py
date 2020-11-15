@@ -17,6 +17,7 @@ class Dino():
         self.isBlinking = False
         self.movement = [0,0]
         self.jumpSpeed = 11.5
+        self.collision_immune = False
 
         self.stand_pos_width = self.rect.width
         self.duck_pos_width = self.rect1.width
@@ -52,6 +53,12 @@ class Dino():
 
         if self.isDead:
             self.index = 4
+
+        if self.collision_immune:
+            if self.counter % 10 == 0:
+                self.index = 4
+            # else:
+            #     self.image = background_col image
 
         if not self.isDucking:
             self.image = self.images[self.index]
