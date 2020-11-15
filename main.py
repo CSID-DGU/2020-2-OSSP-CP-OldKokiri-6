@@ -310,32 +310,13 @@ def board():
 
         else:
             screen.fill(background_col)
-            
-            ### username setting
-            temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
-            HI_image = pygame.Surface((22, int(11 * 6 / 5)))
-            HI_rect = HI_image.get_rect()
-            HI_image.fill(background_col)
-            HI_image.blit(temp_images[10], temp_rect)
-            temp_rect.left += temp_rect.width
-            HI_image.blit(temp_images[11], temp_rect)
-            ###
-            
         
             for i, result in enumerate(results):
-                board = Scoreboard(width * 0.6, height * (0.5 + 0.1 * i))
-                board.update(result['score'])
-                board.draw()
-
+                score_surface = font.render(str(result['score']), True, black)
                 txt_surface = font.render(result['username'], True, black)
 
-                #testtxt_Surface= font.render(username['username'], True, black)
-                ### username drawing
-                HI_rect.top = height * (0.5 + 0.1 * i)
-                HI_rect.left = width * 0.4
-                screen.blit(HI_image, HI_rect)
-                screen.blit(txt_surface, (width*0.2,height*(0.45+0.1*i)))
-                ###
+                screen.blit(score_surface, (width * 0.6, height * (0.45 + 0.1 * i)))
+                screen.blit(txt_surface, (width*0.4, height * (0.45 + 0.1 * i)))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
