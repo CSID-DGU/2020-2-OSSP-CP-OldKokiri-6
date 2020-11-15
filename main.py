@@ -222,7 +222,7 @@ def gameplay():
                             i.kill()
                             item_time = pygame.time.get_ticks()
 
-                    if pygame.time.get_ticks() - item_time > 3000:
+                    if pygame.time.get_ticks() - item_time > 2000:
                         playerDino.collision_immune = False
                         playerDino.isSuper = False
 
@@ -511,5 +511,5 @@ def main():
     if not isGameQuit:
         introscreen()
 
-
-main()
+if __name__ == "__main__":
+    main()
