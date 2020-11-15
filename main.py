@@ -205,20 +205,6 @@ def gameplay():
                         if immune_time - collision_time > 500:
                             playerDino.collision_immune = False
 
-                # for i in items:
-                #     i.movement[0] = -1 * gamespeed
-                #     if not playerDino.isSuper:
-                #         if pygame.sprite.collide_mask(playerDino, i):
-                #             playerDino.collision_immune = True
-                #             playerDino.isSuper = True
-                #             i.kill()
-                #             item_time = pygame.time.get_ticks()
-                #             print(item_time)
-                #     else:
-                #         if pygame.time.get_ticks() - item_time > 1000:
-                #             print(pygame.time.get_ticks())
-                #             playerDino.collision_immune = False
-                #             playerDino.isSuper = False
                 if not playerDino.isSuper:
                     for i in items:
                         i.movement[0] = -1 * gamespeed
@@ -230,9 +216,15 @@ def gameplay():
                 else:
                     for i in items:
                         i.movement[0] = -1 * gamespeed
-                        if pygame.time.get_ticks() - item_time > 1000:
-                            playerDino.collision_immune = False
-                            playerDino.isSuper = False
+                        if pygame.sprite.collide_mask(playerDino, i):
+                            playerDino.collision_immune = True
+                            playerDino.isSuper = True
+                            i.kill()
+                            item_time = pygame.time.get_ticks()
+
+                    if pygame.time.get_ticks() - item_time > 3000:
+                        playerDino.collision_immune = False
+                        playerDino.isSuper = False
 
 
                 if len(cacti) < 2:
