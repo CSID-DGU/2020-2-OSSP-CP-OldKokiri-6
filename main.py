@@ -47,7 +47,7 @@ def introscreen():
                     temp_dino.isBlinking = False
                     temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
                         global resized_screen
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
@@ -76,6 +76,8 @@ def introscreen():
 def gameplay():
     pygame.mixer.music.play(-1) # 배경음악 실행
     global high_score
+    global resized_screen
+
     gamespeed = 4
     startMenu = False
     gameOver = False
@@ -89,7 +91,7 @@ def gameplay():
     scb = Scoreboard()
     highsc = Scoreboard(width * 0.78)
     counter = 0
-
+    
     cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
@@ -111,7 +113,7 @@ def gameplay():
     HI_image.blit(temp_images[11], temp_rect)
     HI_rect.top = height * 0.1
     HI_rect.left = width * 0.73
-
+    
     while not gameQuit:
         while startMenu:
             pass
@@ -163,8 +165,7 @@ def gameplay():
                         playerDino.isDucking = False
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                        if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-                            global resized_screen
+                        if (event.w < width and event.h < height) or event.w < width or event.h < height:
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             if not paused:
@@ -293,7 +294,7 @@ def gameplay():
                         board()                        
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
-                        if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                        if (event.w < width and event.h < height) or event.w < width or event.h < height:
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             highsc.update(high_score)
@@ -343,7 +344,7 @@ def board():
                     introscreen()
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
-                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
                         global resized_screen
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
@@ -395,7 +396,7 @@ def pausing():
                             return False
 
                 if event.type == pygame.VIDEORESIZE:
-                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
                         
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
@@ -428,7 +429,7 @@ def typescore():
     active = True
 
     letternum_restriction=3
-    screen = pygame.display.set_mode((600, 200))
+    screen = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     input_box = pygame.Rect(250, 100, 300, 40)
     #color_inactive = pygame.Color('lightskyblue3')
@@ -455,8 +456,11 @@ def typescore():
                     if event.unicode.isalpha()==True:
                         if len(text)<letternum_restriction:
                             text += event.unicode
+            if event.type == pygame.VIDEORESIZE:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:                        
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
-        screen.fill((255,255 ,255))
+        screen.fill(white)
         txt_surface = font.render(text.upper(), True, color)
         width = max(100, txt_surface.get_width()+10)
         input_box.w = width
