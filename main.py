@@ -359,11 +359,15 @@ def board():
             screen.fill(background_col)
         
             for i, result in enumerate(results):
+                name_inform_surface = font.render("Name", True, black)
+                score_inform_surface = font.render("Score", True, black)
                 score_surface = font.render(str(result['score']), True, black)
                 txt_surface = font.render(result['username'], True, black)
 
-                screen.blit(score_surface, (width * 0.6, height * (0.45 + 0.1 * i)))
-                screen.blit(txt_surface, (width*0.4, height * (0.45 + 0.1 * i)))
+                screen.blit(name_inform_surface, (width * 0.3, height * 0.30))
+                screen.blit(score_inform_surface, (width * 0.5, height * 0.30))
+                screen.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
+                screen.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -401,7 +405,7 @@ def pausing():
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     resume_image, resume_rect = load_image('replay_button.png', 35, 31, -1)
     ###
-    resized_retbutton_image, resized_retbutton_rect  = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_retbutton_image, resized_retbutton_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
     resized_resume_image, resized_resume_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
     ###
     while not gameQuit:

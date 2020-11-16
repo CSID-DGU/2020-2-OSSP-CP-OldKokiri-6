@@ -1,17 +1,10 @@
 import sqlite3
-from contextlib import closing
 
 class InterfDB:
 
     def __init__(self, dbname):
         self.__DBNAME = dbname
         self.db = sqlite3.connect(self.__DBNAME)
-
-    # def connect_db(self):
-    #     return sqlite3.connect(self.__DBNAME)
-
-
-    # db = connect_db()
 
     def init_db(self):
         with open("schema.sql", 'r') as f:
