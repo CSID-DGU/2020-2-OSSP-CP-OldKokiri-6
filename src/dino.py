@@ -18,6 +18,7 @@ class Dino():
         self.movement = [0,0]
         self.jumpSpeed = 11.5
         self.collision_immune = False
+        self.isSuper = False
 
         self.stand_pos_width = self.rect.width
         self.duck_pos_width = self.rect1.width

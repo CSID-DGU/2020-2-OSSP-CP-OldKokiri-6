@@ -7,10 +7,11 @@ from pygame import *
 
 pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay
 pygame.init()
-
+gamername=''
 scr_size = (width,height) = (600,200)      #초기 화면사이즈
 FPS = 60                                   #캐릭터와 장애물이 움직이는 속도(단계별로 조정할 부분)
 gravity = 0.65                              #캐릭터 점프높이의 정도(gravity가 커질수록 점프하는 폭이 작아짐)
+font = pygame.font.Font('DungGeunMo.ttf', 32) #저작권 무료 폰트를 추가했습니다
 
 black = (0,0,0)
 white = (255,255,255)

@@ -7,6 +7,7 @@ from src.ptera import *
 from src.ground import *
 from src.cloud import *
 from src.scoreboard import *
+from src.item import *
 from db_interface import InterfDB
 
 db = InterfDB("score.db")
@@ -94,10 +95,12 @@ def gameplay():
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
+    items = pygame.sprite.Group()
 
     Cactus.containers = cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
+    Item.containers = items
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
@@ -179,7 +182,8 @@ def gameplay():
                                 playerDino.isDead = True
                             if pygame.mixer.get_init() is not None:
                                 die_sound.play()
-                    else:
+
+                    elif not playerDino.isSuper:
                         immune_time = pygame.time.get_ticks()
                         if immune_time - collision_time > 500:
                             playerDino.collision_immune = False
@@ -195,10 +199,33 @@ def gameplay():
                                 playerDino.isDead = True
                             if pygame.mixer.get_init() is not None:
                                 die_sound.play()
-                    else:
+
+                    elif not playerDino.isSuper:
                         immune_time = pygame.time.get_ticks()
                         if immune_time - collision_time > 500:
                             playerDino.collision_immune = False
+
+                if not playerDino.isSuper:
+                    for i in items:
+                        i.movement[0] = -1 * gamespeed
+                        if pygame.sprite.collide_mask(playerDino, i):
+                            playerDino.collision_immune = True
+                            playerDino.isSuper = True
+                            i.kill()
+                            item_time = pygame.time.get_ticks()
+                else:
+                    for i in items:
+                        i.movement[0] = -1 * gamespeed
+                        if pygame.sprite.collide_mask(playerDino, i):
+                            playerDino.collision_immune = True
+                            playerDino.isSuper = True
+                            i.kill()
+                            item_time = pygame.time.get_ticks()
+
+                    if pygame.time.get_ticks() - item_time > 2000:
+                        playerDino.collision_immune = False
+                        playerDino.isSuper = False
+
 
                 if len(cacti) < 2:
                     if len(cacti) == 0:
@@ -219,10 +246,17 @@ def gameplay():
                 if len(clouds) < 5 and random.randrange(0, 300) == 10:
                     Cloud(width, random.randrange(height / 5, height / 2))
 
+                if len(items) == 0 and random.randrange(0, 200) == 10 and counter > 300:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(Item(gamespeed, 46, 40))
+
                 playerDino.update()
                 cacti.update()
                 pteras.update()
                 clouds.update()
+                items.update()
                 new_ground.update()
                 scb.update(playerDino.score)
                 highsc.update(high_score)
@@ -237,6 +271,7 @@ def gameplay():
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
                     pteras.draw(screen)
+                    items.draw(screen)
                     playerDino.draw()
                     resized_screen.blit(
                         pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
@@ -248,9 +283,10 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
+                    '''
                     db.query_db(f"insert into user(username, score) values ('nnn', '{playerDino.score}');")
                     db.commit()
-
+'''
                 if counter % 700 == 699:  # 게임스피드 조작부분(gamespeed아래에 메뉴창 뜨게하는 코드 추가할 것)
                     new_ground.speed -= 1
                     gamespeed += 1
@@ -278,13 +314,18 @@ def gameplay():
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
                             gameQuit = True
+                            typescore()
+                            db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
+                            db.commit()
                             board()
-                            # introscreen()
+                            
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
-                        board()
-                        # introscreen()
+                        typescore()
+                        db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
+                        db.commit()
+                        board()                        
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                         if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
@@ -306,8 +347,8 @@ def gameplay():
 
 
 def board():
-    result = db.query_db("select score from user order by score desc;")
     gameQuit = False
+    results = db.query_db("select username, score from user order by score desc;")
 
     while not gameQuit:
 
@@ -316,27 +357,17 @@ def board():
 
         else:
             screen.fill(background_col)
+        
+            for i, result in enumerate(results):
+                name_inform_surface = font.render("Name", True, black)
+                score_inform_surface = font.render("Score", True, black)
+                score_surface = font.render(str(result['score']), True, black)
+                txt_surface = font.render(result['username'], True, black)
 
-            ### username setting
-            temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
-            HI_image = pygame.Surface((22, int(11 * 6 / 5)))
-            HI_rect = HI_image.get_rect()
-            HI_image.fill(background_col)
-            HI_image.blit(temp_images[10], temp_rect)
-            temp_rect.left += temp_rect.width
-            HI_image.blit(temp_images[11], temp_rect)
-            ###
-
-            for i, score in enumerate(result):
-                board = Scoreboard(width * 0.5, height * (0.5 + 0.1 * i))
-                board.update(score['score'])
-                board.draw()
-
-                ### username drawing
-                HI_rect.top = height * (0.5 + 0.1 * i)
-                HI_rect.left = width * 0.3
-                screen.blit(HI_image, HI_rect)
-                ###
+                screen.blit(name_inform_surface, (width * 0.3, height * 0.30))
+                screen.blit(score_inform_surface, (width * 0.5, height * 0.30))
+                screen.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
+                screen.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -374,7 +405,7 @@ def pausing():
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     resume_image, resume_rect = load_image('replay_button.png', 35, 31, -1)
     ###
-    resized_retbutton_image, resized_retbutton_rect  = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_retbutton_image, resized_retbutton_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
     resized_resume_image, resized_resume_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
     ###
     while not gameQuit:
@@ -431,6 +462,52 @@ def pausing():
     pygame.quit()
     quit()
 
+def typescore():
+    done = False
+    active = True
+
+    letternum_restriction=3
+    screen = pygame.display.set_mode((600, 200))
+    clock = pygame.time.Clock()
+    input_box = pygame.Rect(250, 100, 300, 40)
+    #color_inactive = pygame.Color('lightskyblue3')
+    color = pygame.Color('dodgerblue2')
+
+    text = ''
+    text2 = font.render("플레이어 이름을 입력해주세요", True, (28,0,0))
+
+    while not done:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                if len(text)==letternum_restriction:
+                    done = True
+
+            if event.type == pygame.KEYDOWN:
+                #if active:
+                if event.key == pygame.K_RETURN:
+                    global gamername
+                    gamername=text.upper()
+                    done=True
+                elif event.key == pygame.K_BACKSPACE:
+                    text = text[:-1]
+                else:
+                    if event.unicode.isalpha()==True:
+                        if len(text)<letternum_restriction:
+                            text += event.unicode
+
+        screen.fill((255,255 ,255))
+        txt_surface = font.render(text.upper(), True, color)
+        width = max(100, txt_surface.get_width()+10)
+        input_box.w = width
+
+        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+        screen.blit(text2,(80,50))
+
+        pygame.draw.rect(screen, color, input_box, 2)
+
+        pygame.display.flip()
+        clock.tick(30)
+
 
 def main():
     db.init_db()
@@ -438,5 +515,5 @@ def main():
     if not isGameQuit:
         introscreen()
 
-
-main()
+if __name__ == "__main__":
+    main()
