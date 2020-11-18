@@ -8,6 +8,7 @@ from src.ground import *
 from src.cloud import *
 from src.scoreboard import *
 from src.item import *
+from src.heart import *
 from db_interface import InterfDB
 
 db = InterfDB("score.db")
@@ -89,6 +90,7 @@ def gameplay():
     new_ground = Ground(-1 * gamespeed)
     scb = Scoreboard()
     highsc = Scoreboard(width * 0.78)
+    heart = HeartIndicator(life)
     counter = 0
 
     cacti = pygame.sprite.Group()
@@ -260,12 +262,14 @@ def gameplay():
                 new_ground.update()
                 scb.update(playerDino.score)
                 highsc.update(high_score)
+                heart.update(life)
 
                 if pygame.display.get_surface() != None:
                     screen.fill(background_col)
                     new_ground.draw()
                     clouds.draw(screen)
                     scb.draw()
+                    heart.draw()
                     if high_score != 0:
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
