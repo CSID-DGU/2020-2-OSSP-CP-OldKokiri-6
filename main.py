@@ -12,6 +12,7 @@ from db_interface import InterfDB
 
 db = InterfDB("score.db")
 
+
 def introscreen():
     pygame.mixer.music.stop()
     temp_dino = Dino(44, 47)
@@ -82,15 +83,6 @@ def gameplay():
     gameQuit = False
     ###
     life = 3
-    lifeimage, lifeimage_rect = load_image('life.png', 25, 25, -1)
-    lifeimage_rect.centerx = width * 0.05
-    lifeimage_rect.centery = height * 0.1
-    lifeimage2, lifeimage2_rect = load_image('life.png', 25, 25, -1)
-    lifeimage2_rect.centerx = width * 0.1
-    lifeimage2_rect.centery = height * 0.1
-    lifeimage3, lifeimage3_rect = load_image('life.png', 25, 25, -1)
-    lifeimage3_rect.centerx = width * 0.15
-    lifeimage3_rect.centery = height * 0.1
     ###
     paused = False
     playerDino = Dino(44, 47)
@@ -274,19 +266,6 @@ def gameplay():
                     new_ground.draw()
                     clouds.draw(screen)
                     scb.draw()
-
-                    # 목숨 인디케이터 띄우기
-                    if life == 3:
-                        screen.blit(lifeimage, lifeimage_rect)
-                        screen.blit(lifeimage2, lifeimage2_rect)
-                        screen.blit(lifeimage3, lifeimage3_rect)
-                    elif life == 2:
-                        screen.blit(lifeimage, lifeimage_rect)
-                        screen.blit(lifeimage2, lifeimage2_rect)
-                    elif life == 1:
-                        screen.blit(lifeimage, lifeimage_rect)
-
-
                     if high_score != 0:
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
@@ -339,14 +318,14 @@ def gameplay():
                             db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                             db.commit()
                             board()
-
+                            
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
                         typescore()
                         db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                         db.commit()
-                        board()
+                        board()                        
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                         if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
@@ -378,7 +357,7 @@ def board():
 
         else:
             screen.fill(background_col)
-
+        
             for i, result in enumerate(results):
                 name_inform_surface = font.render("Name", True, black)
                 score_inform_surface = font.render("Score", True, black)
@@ -456,7 +435,7 @@ def pausing():
 
                 if event.type == pygame.VIDEORESIZE:
                     if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-
+                        
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             screen.fill((200, 200, 200))
