@@ -8,9 +8,10 @@ from src.ground import *
 from src.cloud import *
 from src.scoreboard import *
 from src.item import *
-from db_interface import InterfDB
+from src.heart import *
+import db.db_interface as dbi
 
-db = InterfDB("score.db")
+db = dbi.InterfDB("db/score.db")
 
 
 def introscreen():
@@ -89,18 +90,21 @@ def gameplay():
     new_ground = Ground(-1 * gamespeed)
     scb = Scoreboard()
     highsc = Scoreboard(width * 0.78)
+    heart = HeartIndicator(life)
     counter = 0
 
     cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
-    items = pygame.sprite.Group()
+    shield_items = pygame.sprite.Group()
+    life_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
-    Item.containers = items
+    ShieldItem.containers = shield_items
+    LifeItem.containers = life_items
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
@@ -206,26 +210,31 @@ def gameplay():
                             playerDino.collision_immune = False
 
                 if not playerDino.isSuper:
-                    for i in items:
-                        i.movement[0] = -1 * gamespeed
-                        if pygame.sprite.collide_mask(playerDino, i):
+                    for s in shield_items:
+                        s.movement[0] = -1 * gamespeed
+                        if pygame.sprite.collide_mask(playerDino, s):
                             playerDino.collision_immune = True
                             playerDino.isSuper = True
-                            i.kill()
+                            s.kill()
                             item_time = pygame.time.get_ticks()
                 else:
-                    for i in items:
-                        i.movement[0] = -1 * gamespeed
-                        if pygame.sprite.collide_mask(playerDino, i):
+                    for s in shield_items:
+                        s.movement[0] = -1 * gamespeed
+                        if pygame.sprite.collide_mask(playerDino, s):
                             playerDino.collision_immune = True
                             playerDino.isSuper = True
-                            i.kill()
+                            s.kill()
                             item_time = pygame.time.get_ticks()
 
                     if pygame.time.get_ticks() - item_time > 2000:
                         playerDino.collision_immune = False
                         playerDino.isSuper = False
 
+                for l in life_items:
+                    l.movement[0] = -1 * gamespeed
+                    if pygame.sprite.collide_mask(playerDino, l):
+                        life += 1
+                        l.kill()
 
                 if len(cacti) < 2:
                     if len(cacti) == 0:
@@ -246,32 +255,42 @@ def gameplay():
                 if len(clouds) < 5 and random.randrange(0, 300) == 10:
                     Cloud(width, random.randrange(height / 5, height / 2))
 
-                if len(items) == 0 and random.randrange(0, 200) == 10 and counter > 300:
+                if len(shield_items) == 0 and random.randrange(0, 200) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
-                            last_obstacle.add(Item(gamespeed, 46, 40))
+                            last_obstacle.add(ShieldItem(gamespeed, 46, 40))
+
+                if len(life_items) == 0 and random.randrange(0, 300) == 10 and counter > 400:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(LifeItem(gamespeed, 40, 40))
 
                 playerDino.update()
                 cacti.update()
                 pteras.update()
                 clouds.update()
-                items.update()
+                shield_items.update()
+                life_items.update()
                 new_ground.update()
                 scb.update(playerDino.score)
                 highsc.update(high_score)
+                heart.update(life)
 
                 if pygame.display.get_surface() != None:
                     screen.fill(background_col)
                     new_ground.draw()
                     clouds.draw(screen)
                     scb.draw()
+                    heart.draw()
                     if high_score != 0:
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
                     pteras.draw(screen)
-                    items.draw(screen)
+                    shield_items.draw(screen)
+                    life_items.draw(screen)
                     playerDino.draw()
                     resized_screen.blit(
                         pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
@@ -479,8 +498,9 @@ def typescore():
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                if len(text)==letternum_restriction:
-                    done = True
+                done = True
+                # if len(text)==letternum_restriction:
+                #     done = True
 
             if event.type == pygame.KEYDOWN:
                 #if active:
@@ -508,6 +528,8 @@ def typescore():
         pygame.display.flip()
         clock.tick(30)
 
+    pygame.quit()
+    quit()
 
 def main():
     db.init_db()

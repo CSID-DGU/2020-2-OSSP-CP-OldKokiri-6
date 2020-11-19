@@ -1,9 +1,9 @@
-from setting import *
+from src.setting import *
 
 
 class Dino():
     def __init__(self,sizex=-1,sizey=-1):
-        self.images,self.rect = load_sprite_sheet('dino.png',5,1,sizex,sizey,-1)
+        self.images,self.rect = load_sprite_sheet('dino2.png', 6, 1, sizex, sizey, -1)
         self.images1,self.rect1 = load_sprite_sheet('dino_ducking.png',2,1,59,sizey,-1)
         self.rect.bottom = int(0.98*height)
         self.rect.left = width/15
@@ -57,15 +57,16 @@ class Dino():
 
         if self.collision_immune:
             if self.counter % 10 == 0:
-                self.index = 4
-            # else:
-            #     self.image = background_col image
+                self.index = 5
 
         if not self.isDucking:
             self.image = self.images[self.index]
             self.rect.width = self.stand_pos_width
         else:
-            self.image = self.images1[(self.index)%2]
+            self.image = self.images1[self.index % 2]
+            if self.collision_immune is True:
+                if self.counter % 5 == 0:
+                    self.image = self.images[5]
             self.rect.width = self.duck_pos_width
 
         self.rect = self.rect.move(self.movement)

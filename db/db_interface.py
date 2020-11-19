@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class InterfDB:
 
     def __init__(self, dbname):
@@ -7,7 +8,7 @@ class InterfDB:
         self.db = sqlite3.connect(self.__DBNAME)
 
     def init_db(self):
-        with open("schema.sql", 'r') as f:
+        with open("./db/schema.sql", 'r') as f:
             self.db.cursor().executescript(f.read())
         self.db.commit()
 
