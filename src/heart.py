@@ -23,8 +23,9 @@ class Heart:
 class HeartIndicator:
 
     def __init__(self, life):
+        self.heart_size = 40
         self.life = life
-        self.life_set = [Heart(40, 40, width*(0.01*i)) for i in range(self.life)]
+        self.life_set = []
 
     def draw(self):
         for life in self.life_set:
@@ -32,6 +33,6 @@ class HeartIndicator:
 
     def update(self, life):
         self.life = life
-        print(len(self.life_set))
+        self.life_set = [Heart(self.heart_size, self.heart_size, width * 0.01 + i * self.heart_size) for i in range(self.life)]
 
 
