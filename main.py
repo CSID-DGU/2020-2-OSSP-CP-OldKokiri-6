@@ -528,8 +528,6 @@ def typescore():
         pygame.display.flip()
         clock.tick(30)
 
-    pygame.quit()
-    quit()
 
 def main():
     db.init_db()
