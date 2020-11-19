@@ -1,4 +1,4 @@
-from db_interface import InterfDB
+from db.db_interface import InterfDB
 
 idb = InterfDB("score.db")
 

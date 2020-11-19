@@ -9,9 +9,9 @@ from src.cloud import *
 from src.scoreboard import *
 from src.item import *
 from src.heart import *
-from db_interface import InterfDB
+import db.db_interface as dbi
 
-db = InterfDB("score.db")
+db = dbi.InterfDB("db/score.db")
 
 
 def introscreen():
