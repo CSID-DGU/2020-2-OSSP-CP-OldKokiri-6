@@ -8,6 +8,7 @@ from src.ground import *
 from src.cloud import *
 from src.scoreboard import *
 from src.item import *
+from src.life_item import *
 from src.heart import *
 from db_interface import InterfDB
 
@@ -98,11 +99,13 @@ def gameplay():
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
     items = pygame.sprite.Group()
+    life_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     Item.containers = items
+    LifeItem.containers = life_items
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
@@ -228,6 +231,11 @@ def gameplay():
                         playerDino.collision_immune = False
                         playerDino.isSuper = False
 
+                for l in life_items:
+                    l.movement[0] = -1 * gamespeed
+                    if pygame.sprite.collide_mask(playerDino, l):
+                        life += 1
+                        l.kill()
 
                 if len(cacti) < 2:
                     if len(cacti) == 0:
@@ -254,11 +262,18 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(Item(gamespeed, 46, 40))
 
+                if len(life_items) == 0 and random.randrange(0, 300) == 10 and counter > 400:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(LifeItem(gamespeed, 40, 40))
+
                 playerDino.update()
                 cacti.update()
                 pteras.update()
                 clouds.update()
                 items.update()
+                life_items.update()
                 new_ground.update()
                 scb.update(playerDino.score)
                 highsc.update(high_score)
@@ -276,6 +291,7 @@ def gameplay():
                     cacti.draw(screen)
                     pteras.draw(screen)
                     items.draw(screen)
+                    life_items.draw(screen)
                     playerDino.draw()
                     resized_screen.blit(
                         pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
