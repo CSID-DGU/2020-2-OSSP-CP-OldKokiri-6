@@ -498,8 +498,9 @@ def typescore():
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                if len(text)==letternum_restriction:
-                    done = True
+                done = True
+                # if len(text)==letternum_restriction:
+                #     done = True
 
             if event.type == pygame.KEYDOWN:
                 #if active:
@@ -527,6 +528,8 @@ def typescore():
         pygame.display.flip()
         clock.tick(30)
 
+    pygame.quit()
+    quit()
 
 def main():
     db.init_db()
