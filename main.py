@@ -11,13 +11,6 @@ from src.item import *
 from db_interface import InterfDB
 
 db = InterfDB("score.db")
-#lifeimage = pygame.image.load('sprites/life.png')
-#lifeimagex = 360
-#lifeimagey = 240
-#direction = 'left'
-#screen.blit(lifeimage, (lifeimagex, lifeimagey))
-
-
 
 def introscreen():
     pygame.mixer.music.stop()
