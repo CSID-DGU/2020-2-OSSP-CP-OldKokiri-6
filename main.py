@@ -337,14 +337,14 @@ def gameplay():
                             db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                             db.commit()
                             board()
-                            
+
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
                         typescore()
                         db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                         db.commit()
-                        board()                        
+                        board()
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                         if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
@@ -376,7 +376,7 @@ def board():
 
         else:
             screen.fill(background_col)
-        
+
             for i, result in enumerate(results):
                 name_inform_surface = font.render("Name", True, black)
                 score_inform_surface = font.render("Score", True, black)
@@ -454,7 +454,7 @@ def pausing():
 
                 if event.type == pygame.VIDEORESIZE:
                     if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-                        
+
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             screen.fill((200, 200, 200))
