@@ -13,7 +13,6 @@ import db.db_interface as dbi
 
 db = dbi.InterfDB("db/score.db")
 
-
 def introscreen():
     pygame.mixer.music.stop()
     temp_dino = Dino(44, 47)
