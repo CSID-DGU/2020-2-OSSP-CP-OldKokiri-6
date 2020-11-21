@@ -457,7 +457,7 @@ def pausing():
 
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
-            screen.fill((200, 200, 200))
+            screen.fill((250, 200, 200)) #배경화면 색상코드
             retbutton_rect.centerx = width * 0.4
             retbutton_rect.top = height * 0.52
             resume_rect.centerx = width * 0.6
