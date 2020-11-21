@@ -13,7 +13,6 @@ import db.db_interface as dbi
 
 db = dbi.InterfDB("db/score.db")
 
-
 def introscreen():
     pygame.mixer.music.stop()
     temp_dino = Dino(44, 47)
@@ -337,14 +336,14 @@ def gameplay():
                             db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                             db.commit()
                             board()
-                            
+
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
                         typescore()
                         db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                         db.commit()
-                        board()                        
+                        board()
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                         if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
@@ -376,7 +375,7 @@ def board():
 
         else:
             screen.fill(background_col)
-        
+
             for i, result in enumerate(results):
                 name_inform_surface = font.render("Name", True, black)
                 score_inform_surface = font.render("Score", True, black)
@@ -417,15 +416,18 @@ def board():
 
 def pausing():
     gameQuit = False
+    pause_pic, pause_pic_rect = load_image('pause_pic.png', 240, 50, -1)
+    pause_pic_rect.centerx = width * 0.5
+    pause_pic_rect.centery = height * 0.2
 
     global resized_screen
     pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
 
-    retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
-    resume_image, resume_rect = load_image('replay_button.png', 35, 31, -1)
+    retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
+    resume_image, resume_rect = load_image('continue_button.png', 35, 31, -1)
     ###
-    resized_retbutton_image, resized_retbutton_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
-    resized_resume_image, resized_resume_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_retbutton_image, resized_retbutton_rect = load_image('main_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_resume_image, resized_resume_rect = load_image('continue_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
     ###
     while not gameQuit:
         if pygame.display.get_surface() is None:
@@ -454,10 +456,11 @@ def pausing():
 
                 if event.type == pygame.VIDEORESIZE:
                     if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-                        
+
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
-            screen.fill((200, 200, 200))
+            screen.fill((250, 200, 200))
+            screen.blit(pause_pic, pause_pic_rect)
             retbutton_rect.centerx = width * 0.4
             retbutton_rect.top = height * 0.52
             resume_rect.centerx = width * 0.6
