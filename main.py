@@ -106,7 +106,7 @@ def gameplay():
     ShieldItem.containers = shield_items
     LifeItem.containers = life_items
 
-    retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
+    retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
 
     temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
@@ -421,11 +421,11 @@ def pausing():
     global resized_screen
     pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
 
-    retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
-    resume_image, resume_rect = load_image('replay_button.png', 35, 31, -1)
+    retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
+    resume_image, resume_rect = load_image('continue_button.png', 35, 31, -1)
     ###
-    resized_retbutton_image, resized_retbutton_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
-    resized_resume_image, resized_resume_rect = load_image('replay_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_retbutton_image, resized_retbutton_rect = load_image('main_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_resume_image, resized_resume_rect = load_image('continue_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
     ###
     while not gameQuit:
         if pygame.display.get_surface() is None:
