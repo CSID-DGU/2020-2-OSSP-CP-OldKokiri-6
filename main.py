@@ -105,7 +105,7 @@ def gameplay():
     ShieldItem.containers = shield_items
     LifeItem.containers = life_items
 
-    retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
+    retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
 
     temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
