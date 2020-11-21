@@ -417,6 +417,9 @@ def board():
 
 def pausing():
     gameQuit = False
+    pause_pic, pause_pic_rect = load_image('pause_pic.png', 240, 50, -1)
+    pause_pic_rect.centerx = width * 0.5
+    pause_pic_rect.centery = height * 0.2
 
     global resized_screen
     pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
@@ -457,7 +460,8 @@ def pausing():
 
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
-            screen.fill((200, 200, 200))
+            screen.fill((250, 200, 200))
+            screen.blit(pause_pic, pause_pic_rect)
             retbutton_rect.centerx = width * 0.4
             retbutton_rect.top = height * 0.52
             resume_rect.centerx = width * 0.6
