@@ -171,6 +171,7 @@ def gameplay():
     shield_items = pygame.sprite.Group()
     life_items = pygame.sprite.Group()
     slow_items = pygame.sprite.Group()
+    highjump_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
     Ptera.containers = pteras
@@ -178,6 +179,7 @@ def gameplay():
     ShieldItem.containers = shield_items
     LifeItem.containers = life_items
     SlowItem.containers = slow_items
+    HighJumpItem.containers = highjump_items
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
@@ -316,6 +318,12 @@ def gameplay():
                         new_ground.speed += 1
                         k.kill()
 
+                for h in highjump_items:
+                    h.movement[0] = -1 * gamespeed
+                    if pygame.sprite.collide_mask(playerDino, h):
+                        playerDino.isJumping = True
+                        playerDino.movement[1] = -1 * playerDino.jumpSpeed * 1.3
+
                 if len(cacti) < 2:
                     if len(cacti) == 0:
                         last_obstacle.empty()
@@ -352,6 +360,11 @@ def gameplay():
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(SlowItem(gamespeed, 45, 40))
+                if len(highjump_items) == 0 and random.randrange(0, 300) == 10 and counter > 300:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(HighJumpItem(gamespeed, 40, 20))
 
                 playerDino.update()
                 cacti.update()
@@ -359,6 +372,7 @@ def gameplay():
                 clouds.update()
                 shield_items.update()
                 life_items.update()
+                highjump_items.update()
                 new_ground.update()
                 scb.update(playerDino.score)
                 highsc.update(high_score)
@@ -379,6 +393,7 @@ def gameplay():
                     shield_items.draw(screen)
                     life_items.draw(screen)
                     slow_items.draw(screen)
+                    highjump_items.draw(screen)
                     playerDino.draw()
                     resized_screen.blit(
                         pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))

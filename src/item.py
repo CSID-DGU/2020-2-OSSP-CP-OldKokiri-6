@@ -59,6 +59,18 @@ class SlowItem(pygame.sprite.Sprite):
         self.images, self.rect = load_sprite_sheet("slow_pic.png", 2, 1, sizex, sizey, -1)
         self.slow_height = [height*0.82, height*0.75, height*0.60]
         self.rect.centery = self.slow_height[random.randrange(3)]
+        self.image = self.images[self.index]
+        self.rect = self.rect.move(self.movement)
+        self.counter = (self.counter + 1)
+
+        if self.rect.right < 0:
+            self.kill()
+
+class HighJumpItem(pygame.sprite.Sprite):
+    def __init__(self, speed=5, sizex=-1, sizey=-1):
+        pygame.sprite.Sprite.__init__(self, self.containers)
+        self.images, self.rect = load_sprite_sheet('jump.png', 3, 1, sizex, sizey, -1)
+        self.rect.bottom = int(0.98 * height)
         self.rect.left = width + self.rect.width
         self.image = self.images[0]
         self.movement = [-1 * speed, 0]
@@ -74,5 +86,5 @@ class SlowItem(pygame.sprite.Sprite):
         self.image = self.images[self.index]
         self.rect = self.rect.move(self.movement)
         self.counter = (self.counter + 1)
-        if self.rect.right < 0:
-            self.kill()
+        self.index = (self.index + 1) % 3
+
