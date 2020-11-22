@@ -47,9 +47,7 @@ def introscreen():
     btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
     btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
 
-    r_btn_gamestart_rect.centerx, r_btn_board_rect.centerx, r_btn_credit_rect.centerx = rwidth * 0.72, rwidth * 0.72, rwidth * 0.72
-    r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = rheight * 0.33, rheight * (0.33+between_btn), rheight * (0.33+2*between_btn)
-
+    
     while not gameStart:
         if pygame.display.get_surface() == None:
             print("Couldn't load display surface")
@@ -81,20 +79,24 @@ def introscreen():
                         if r_btn_board_rect.collidepoint(x, y):
                             board()
 
+                        if r_btn_credit_rect.collidepoint(x, y):
+                            pass
+
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
         temp_dino.update()
-
+        
         if pygame.display.get_surface() != None:
             screen.fill(background_col)
             screen.blit(temp_ground[0], temp_ground_rect)
+            r_btn_gamestart_rect.centerx, r_btn_board_rect.centerx, r_btn_credit_rect.centerx = resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72
+            r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = resized_screen.get_height() * 0.33, resized_screen.get_height() * (0.33+between_btn), resized_screen.get_height() * (0.33+2*between_btn)
             screen.blit(Background, Background_rect)
             screen.blit(btn_gamestart, btn_gamestart_rect)
             screen.blit(btn_board, btn_board_rect)
             screen.blit(btn_credit, btn_credit_rect)
-            
             if temp_dino.isBlinking:
                 screen.blit(logo, logo_rect)
                 #screen.blit(callout, callout_rect)
@@ -499,15 +501,11 @@ def pausing():
 
             screen.fill((250, 200, 200))
             screen.blit(pause_pic, pause_pic_rect)
-            retbutton_rect.centerx = width * 0.4
-            retbutton_rect.top = height * 0.52
-            resume_rect.centerx = width * 0.6
-            resume_rect.top = height * 0.52
+            retbutton_rect.centerx = width * 0.4 ; retbutton_rect.top = height * 0.52
+            resume_rect.centerx = width * 0.6 ; resume_rect.top = height * 0.52
             ###
-            resized_retbutton_rect.centerx = rwidth * 0.4
-            resized_retbutton_rect.top = rheight * 0.52
-            resized_resume_rect.centerx = rwidth * 0.6
-            resized_resume_rect.top = rheight * 0.52
+            resized_retbutton_rect.centerx = resized_screen.get_width() * 0.4 ; resized_retbutton_rect.top = resized_screen.get_height() * 0.52
+            resized_resume_rect.centerx = resized_screen.get_width() * 0.6 ; resized_resume_rect.top = resized_screen.get_height() * 0.52
             ###
             screen.blit(retbutton_image, retbutton_rect)
             screen.blit(resume_image, resume_rect)
