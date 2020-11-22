@@ -14,22 +14,42 @@ import db.db_interface as dbi
 db = dbi.InterfDB("db/score.db")
 
 def introscreen():
+    global resized_screen
     pygame.mixer.music.stop()
     temp_dino = Dino(44, 47)
     temp_dino.isBlinking = True
     gameStart = False
-
+    '''
     callout, callout_rect = load_image('call_out.png', 196, 45, -1)
     callout_rect.left = width * 0.05
     callout_rect.top = height * 0.4
-
+    '''
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
     temp_ground_rect.left = width / 20
     temp_ground_rect.bottom = height
 
-    logo, logo_rect = load_image('logo.png', 240, 40, -1)
-    logo_rect.centerx = width * 0.6
-    logo_rect.centery = height * 0.6
+    logo, logo_rect = load_image('logo.png', 180, 30, -1)
+    logo_rect.centerx = width * 0.22
+    logo_rect.centery = height * 0.3
+
+    Background, Background_rect = load_image('introscreenBG.png', 600, 200, -1)
+    Background_rect.left = width*0
+    Background_rect.bottom = height
+
+    #introscreen refactoring
+    #between_btn = 50 #버튼간격 
+    between_btn = 0.25
+     
+    r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
+    r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
+    r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
+    
+    btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
+    btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
+
+    r_btn_gamestart_rect.centerx, r_btn_board_rect.centerx, r_btn_credit_rect.centerx = rwidth * 0.72, rwidth * 0.72, rwidth * 0.72
+    r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = rheight * 0.33, rheight * (0.33+between_btn), rheight * (0.33+2*between_btn)
+
     while not gameStart:
         if pygame.display.get_surface() == None:
             print("Couldn't load display surface")
@@ -38,18 +58,31 @@ def introscreen():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return True
+                '''
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                         temp_dino.isJumping = True
                         temp_dino.isBlinking = False
                         temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
+                
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     temp_dino.isJumping = True
                     temp_dino.isBlinking = False
                     temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
+                '''
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if pygame.mouse.get_pressed() == (1, 0, 0):
+                        x, y = event.pos
+                        if r_btn_gamestart_rect.collidepoint(x, y):
+                            temp_dino.isJumping = True
+                            temp_dino.isBlinking = False
+                            temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
+
+                        if r_btn_board_rect.collidepoint(x, y):
+                            board()
+
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-                        global resized_screen
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
         temp_dino.update()
@@ -57,10 +90,15 @@ def introscreen():
         if pygame.display.get_surface() != None:
             screen.fill(background_col)
             screen.blit(temp_ground[0], temp_ground_rect)
+            screen.blit(Background, Background_rect)
+            screen.blit(btn_gamestart, btn_gamestart_rect)
+            screen.blit(btn_board, btn_board_rect)
+            screen.blit(btn_credit, btn_credit_rect)
+            
             if temp_dino.isBlinking:
                 screen.blit(logo, logo_rect)
-                screen.blit(callout, callout_rect)
-            temp_dino.draw()
+                #screen.blit(callout, callout_rect)
+            temp_dino.draw()   
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
             pygame.display.update()
@@ -346,7 +384,7 @@ def gameplay():
                         board()
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
-                        if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                        if (event.w < width and event.h < height) or event.w < width or event.h < height:
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             highsc.update(high_score)
@@ -400,7 +438,7 @@ def board():
                     introscreen()
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
-                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
                         global resized_screen
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
@@ -455,7 +493,7 @@ def pausing():
                             return False
 
                 if event.type == pygame.VIDEORESIZE:
-                    if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
 
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
@@ -466,12 +504,10 @@ def pausing():
             resume_rect.centerx = width * 0.6
             resume_rect.top = height * 0.52
             ###
-            resized_retbutton_rect.centerx = resized_screen.get_width() * 0.4
-            resized_retbutton_rect.top = resized_screen.get_height() * 0.52
-            resized_resume_rect.centerx = resized_screen.get_width() * 0.6
-            resized_resume_rect.top = resized_screen.get_height() * 0.52
-            resized_screen.blit(retbutton_image, resized_retbutton_rect)
-            resized_screen.blit(resume_image, resized_resume_rect)
+            resized_retbutton_rect.centerx = rwidth * 0.4
+            resized_retbutton_rect.top = rheight * 0.52
+            resized_resume_rect.centerx = rwidth * 0.6
+            resized_resume_rect.top = rheight * 0.52
             ###
             screen.blit(retbutton_image, retbutton_rect)
             screen.blit(resume_image, resume_rect)
