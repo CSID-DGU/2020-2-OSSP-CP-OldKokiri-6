@@ -2,9 +2,9 @@ from src.setting import *
 
 
 class Dino():
-    def __init__(self,sizex=-1,sizey=-1):
-        self.images,self.rect = load_sprite_sheet('dino2.png', 6, 1, sizex, sizey, -1)
-        self.images1,self.rect1 = load_sprite_sheet('dino_ducking.png',2,1,59,sizey,-1)
+    def __init__(self, sizex=-1, sizey=-1):
+        self.images, self.rect = load_sprite_sheet('dino.png', 6, 1, sizex, sizey, -1)
+        self.images1, self.rect1 = load_sprite_sheet('dino_ducking.png', 2, 1, 59, sizey, -1)
         self.rect.bottom = int(0.98*height)
         self.rect.left = width/15
         self.image = self.images[0]
@@ -15,8 +15,9 @@ class Dino():
         self.isDead = False
         self.isDucking = False
         self.isBlinking = False
-        self.movement = [0,0]
+        self.movement = [0, 0]
         self.jumpSpeed = 11.5
+        self.superJumpSpeed = self.jumpSpeed * 1.3
         self.collision_immune = False
         self.isSuper = False
 

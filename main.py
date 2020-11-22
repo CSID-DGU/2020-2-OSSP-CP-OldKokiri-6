@@ -322,7 +322,7 @@ def gameplay():
                     h.movement[0] = -1 * gamespeed
                     if pygame.sprite.collide_mask(playerDino, h):
                         playerDino.isJumping = True
-                        playerDino.movement[1] = -1 * playerDino.jumpSpeed * 1.3
+                        playerDino.movement[1] = -1 * playerDino.superJumpSpeed
 
                 if len(cacti) < 2:
                     if len(cacti) == 0:
