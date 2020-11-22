@@ -551,6 +551,11 @@ def typescore():
                     if event.unicode.isalpha()==True:
                         if len(text)<letternum_restriction:
                             text += event.unicode
+                            
+            if event.type == pygame.VIDEORESIZE:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
+
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
         screen.fill((255,255 ,255))
         txt_surface = font.render(text.upper(), True, color)
