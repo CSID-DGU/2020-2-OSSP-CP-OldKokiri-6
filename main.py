@@ -37,13 +37,13 @@ def introscreen():
     Background_rect.bottom = height
 
     #introscreen refactoring
-    #between_btn = 50 #버튼간격 
+    #between_btn = 50 #버튼간격
     between_btn = 0.25
-     
+
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
-    
+
     btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
     btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
 
@@ -62,7 +62,7 @@ def introscreen():
                         temp_dino.isJumping = True
                         temp_dino.isBlinking = False
                         temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
-                
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     temp_dino.isJumping = True
                     temp_dino.isBlinking = False
@@ -87,7 +87,7 @@ def introscreen():
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
         temp_dino.update()
-        
+
         if pygame.display.get_surface() != None:
             screen.fill(background_col)
             screen.blit(temp_ground[0], temp_ground_rect)
@@ -100,7 +100,7 @@ def introscreen():
             if temp_dino.isBlinking:
                 screen.blit(logo, logo_rect)
                 #screen.blit(callout, callout_rect)
-            temp_dino.draw()   
+            temp_dino.draw()
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
             pygame.display.update()
@@ -551,7 +551,7 @@ def typescore():
                     if event.unicode.isalpha()==True:
                         if len(text)<letternum_restriction:
                             text += event.unicode
-                            
+
             if event.type == pygame.VIDEORESIZE:
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
 
