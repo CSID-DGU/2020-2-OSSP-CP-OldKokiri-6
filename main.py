@@ -47,7 +47,7 @@ def introscreen():
     btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
     btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
 
-    
+
     while not gameStart:
         if pygame.display.get_surface() == None:
             print("Couldn't load display surface")
@@ -466,8 +466,8 @@ def pausing():
     retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
     resume_image, resume_rect = load_image('continue_button.png', 35, 31, -1)
     ###
-    resized_retbutton_image, resized_retbutton_rect = load_image('main_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
-    resized_resume_image, resized_resume_rect = load_image('continue_button.png', 35*resized_screen.get_width()//600, 31*resized_screen.get_height()//200, -1)
+    resized_retbutton_image, resized_retbutton_rect = load_image('main_button.png', 35*resized_screen.get_width()//width, 31*resized_screen.get_height()//height, -1)
+    resized_resume_image, resized_resume_rect = load_image('continue_button.png', 35*resized_screen.get_width()//width, 31*resized_screen.get_height()//height, -1)
     ###
     while not gameQuit:
         if pygame.display.get_surface() is None:
