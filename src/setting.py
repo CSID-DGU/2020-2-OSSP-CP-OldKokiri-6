@@ -18,9 +18,11 @@ white = (255,255,255)
 background_col = (235,235,235)             #배경화면 RGB컬러
 
 high_score = 0
-
 resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 screen = resized_screen.copy()
+rwidth = resized_screen.get_width()
+rheight = resized_screen.get_height()
+
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush by_OldKokiri")     #게임창의 캡션
 
