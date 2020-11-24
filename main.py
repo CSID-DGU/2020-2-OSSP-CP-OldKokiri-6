@@ -14,16 +14,22 @@ import db.db_interface as dbi
 db = dbi.InterfDB("db/score.db")
 
 def introscreen():
+    global on_pushtime; global off_pushtime
+    global bgm_on
     global resized_screen
     pygame.mixer.music.stop()
     temp_dino = Dino(44, 47)
     temp_dino.isBlinking = True
     gameStart = False
+
+    between_btn = 0.25
     '''
     callout, callout_rect = load_image('call_out.png', 196, 45, -1)
     callout_rect.left = width * 0.05
     callout_rect.top = height * 0.4
     '''
+    
+
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
     temp_ground_rect.left = width / 20
     temp_ground_rect.bottom = height
@@ -38,7 +44,7 @@ def introscreen():
 
     #introscreen refactoring
     #between_btn = 50 #버튼간격 
-    between_btn = 0.25
+    
      
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
@@ -47,6 +53,12 @@ def introscreen():
     btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
     btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
 
+    btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 40, 40, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 40, 40, -1)
+    r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 40*rwidth//width, 40*rwidth//width, -1)
+    
+    
+    btn_bgm_on_rect.centerx = width*0.3
+    btn_bgm_on_rect.centery = btn_credit_rect.centery
 
     while not gameStart:
         if pygame.display.get_surface() == None:
@@ -80,7 +92,19 @@ def introscreen():
                             board()
 
                         if r_btn_credit_rect.collidepoint(x, y):
-                            pass
+                            credit()
+
+                        if r_btn_bgm_on_rect.collidepoint(x, y) and bgm_on:
+                            off_pushtime = pygame.time.get_ticks()
+                            if off_pushtime-on_pushtime>500:
+                                bgm_on=False
+                            
+                        if r_btn_bgm_on_rect.collidepoint(x, y) and not bgm_on:
+                            on_pushtime = pygame.time.get_ticks()
+                            if on_pushtime-off_pushtime>500:
+                                bgm_on=True
+                            
+
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
@@ -97,6 +121,13 @@ def introscreen():
             screen.blit(btn_gamestart, btn_gamestart_rect)
             screen.blit(btn_board, btn_board_rect)
             screen.blit(btn_credit, btn_credit_rect)
+
+            if bgm_on:
+                screen.blit(btn_bgm_on, btn_bgm_on_rect)
+                r_btn_bgm_on_rect.centerx, r_btn_bgm_on_rect.centery = resized_screen.get_width() * 0.3, r_btn_credit_rect.centery
+            if not bgm_on:
+                screen.blit(btn_bgm_off, btn_bgm_on_rect)
+                r_btn_bgm_on_rect.centerx, r_btn_bgm_on_rect.centery = resized_screen.get_width() * 0.3, r_btn_credit_rect.centery
             if temp_dino.isBlinking:
                 screen.blit(logo, logo_rect)
                 #screen.blit(callout, callout_rect)
@@ -114,9 +145,10 @@ def introscreen():
     quit()
 
 
-def gameplay():
-    pygame.mixer.music.play(-1) # 배경음악 실행
+def gameplay():   
     global high_score
+    if bgm_on:
+        pygame.mixer.music.play(-1) # 배경음악 실행
     gamespeed = 4
     startMenu = False
     gameOver = False
@@ -455,12 +487,12 @@ def board():
 
 
 def pausing():
+    global resized_screen
     gameQuit = False
     pause_pic, pause_pic_rect = load_image('pause_pic.png', 240, 50, -1)
     pause_pic_rect.centerx = width * 0.5
     pause_pic_rect.centery = height * 0.2
 
-    global resized_screen
     pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
 
     retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
@@ -498,8 +530,7 @@ def pausing():
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
 
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-
-            screen.fill((250, 200, 200))
+            screen.fill(white)
             screen.blit(pause_pic, pause_pic_rect)
             retbutton_rect.centerx = width * 0.4 ; retbutton_rect.top = height * 0.52
             resume_rect.centerx = width * 0.6 ; resume_rect.top = height * 0.52
@@ -521,8 +552,11 @@ def pausing():
 def typescore():
     done = False
     active = True
-
+    
+    message_pos = (80,50)
+    typebox_size = 100
     letternum_restriction=3
+
     screen = pygame.display.set_mode((600, 200))
     clock = pygame.time.Clock()
     input_box = pygame.Rect(250, 100, 300, 40)
@@ -557,19 +591,46 @@ def typescore():
 
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
-        screen.fill((255,255 ,255))
+        screen.fill(white)
         txt_surface = font.render(text.upper(), True, color)
-        width = max(100, txt_surface.get_width()+10)
+        width = max(typebox_size, txt_surface.get_width()+10)
         input_box.w = width
 
         screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
-        screen.blit(text2,(80,50))
+        screen.blit(text2,message_pos)
 
         pygame.draw.rect(screen, color, input_box, 2)
 
         pygame.display.flip()
         clock.tick(30)
 
+def credit():
+    global resized_screen
+    done = False
+    creditimg, creditimg_rect = load_image('credit.png', width, height, -1)
+
+    while not done:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+                # if len(text)==letternum_restriction:
+                #     done = True
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return False
+            if event.type == pygame.VIDEORESIZE:
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
+
+                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+        screen.fill(white)
+        screen.blit(creditimg, creditimg_rect)
+        resized_screen.blit(
+                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
+                (0, 0))
+        pygame.display.update()
+       
+        clock.tick(30)
 
 def main():
     db.init_db()
