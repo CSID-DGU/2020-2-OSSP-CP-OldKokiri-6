@@ -26,6 +26,9 @@ rheight = resized_screen.get_height()
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush by_OldKokiri")     #게임창의 캡션
 
+bgm_on=True
+on_pushtime=0
+off_pushtime=0
 jump_sound = pygame.mixer.Sound('sprites/jump.wav')
 die_sound = pygame.mixer.Sound('sprites/die.wav')
 checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
