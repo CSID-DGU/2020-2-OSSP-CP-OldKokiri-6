@@ -9,6 +9,7 @@ from src.cloud import *
 from src.scoreboard import *
 from src.item import *
 from src.heart import *
+from src.slow import *
 import db.db_interface as dbi
 
 db = dbi.InterfDB("db/score.db")
@@ -170,12 +171,14 @@ def gameplay():
     last_obstacle = pygame.sprite.Group()
     shield_items = pygame.sprite.Group()
     life_items = pygame.sprite.Group()
+    slow_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
     LifeItem.containers = life_items
+    SlowItem.containers = slow_items
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
@@ -307,6 +310,13 @@ def gameplay():
                         life += 1
                         l.kill()
 
+                for k in slow_items:
+                    k.movement[0] = -1 * gamespeed
+                    if pygame.sprite.collide_mask(playerDino, k):
+                        gamespeed -= 1
+                        new_ground.speed += 1
+                        k.kill()
+
                 if len(cacti) < 2:
                     if len(cacti) == 0:
                         last_obstacle.empty()
@@ -338,6 +348,12 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, 40, 40))
 
+                if len(slow_items) == 0 and random.randrange(0, 350) == 10 and counter > 500:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(SlowItem(gamespeed, 45, 40))
+
                 playerDino.update()
                 cacti.update()
                 pteras.update()
@@ -348,6 +364,7 @@ def gameplay():
                 scb.update(playerDino.score)
                 highsc.update(high_score)
                 heart.update(life)
+                slow_items.update()
 
                 if pygame.display.get_surface() != None:
                     screen.fill(background_col)
@@ -355,6 +372,7 @@ def gameplay():
                     clouds.draw(screen)
                     scb.draw()
                     heart.draw()
+                    #slow.draw()
                     if high_score != 0:
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
@@ -362,6 +380,7 @@ def gameplay():
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
+                    slow_items.draw(screen)
                     playerDino.draw()
                     resized_screen.blit(
                         pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
