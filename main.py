@@ -9,7 +9,6 @@ from src.cloud import *
 from src.scoreboard import *
 from src.item import *
 from src.heart import *
-#from src.slow import *
 import db.db_interface as dbi
 
 db = dbi.InterfDB("db/score.db")
@@ -372,7 +371,6 @@ def gameplay():
                     clouds.draw(screen)
                     scb.draw()
                     heart.draw()
-                    #slow.draw()
                     if high_score != 0:
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
