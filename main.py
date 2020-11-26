@@ -38,7 +38,7 @@ def introscreen():
     logo_rect.centerx = width * 0.22
     logo_rect.centery = height * 0.3
 
-    Background, Background_rect = load_image('introscreenBG.png', 600, 200, -1)
+    Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
 
@@ -103,8 +103,6 @@ def introscreen():
                             on_pushtime = pygame.time.get_ticks()
                             if on_pushtime-off_pushtime>500:
                                 bgm_on=True
-
-
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
@@ -360,7 +358,8 @@ def gameplay():
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
-                            last_obstacle.add(SlowItem(gamespeed, 45, 40))
+                            last_obstacle.add(SlowItem(gamespeed, object_size[0], object_size[1]))
+
                 if len(highjump_items) == 0 and random.randrange(0, 300) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
@@ -589,7 +588,7 @@ def typescore():
     message_pos = (80,50)
     typebox_size = 100
     letternum_restriction=3
-    screen = pygame.display.set_mode((width, height))
+    screen = pygame.display.set_mode(scr_size)
     clock = pygame.time.Clock()
     input_box = pygame.Rect(250, 100, 300, 40)
     #color_inactive = pygame.Color('lightskyblue3')

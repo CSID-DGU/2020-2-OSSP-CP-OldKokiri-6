@@ -8,7 +8,7 @@ from pygame import *
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 gamername=''
-scr_size = (width, height) = (600, 200)
+scr_size = (width, height) = (900, 300)
 FPS = 60
 gravity = 0.65
 font = pygame.font.Font('DungGeunMo.ttf', 32)
