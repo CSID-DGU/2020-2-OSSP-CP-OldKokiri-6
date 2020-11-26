@@ -5,17 +5,17 @@ import pygame
 from pygame import *
 
 
-pygame.mixer.pre_init(44100, -16, 2, 2048) # fix audio delay
+pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 gamername=''
-scr_size = (width,height) = (600,200)      #초기 화면사이즈
-FPS = 60                                   #캐릭터와 장애물이 움직이는 속도(단계별로 조정할 부분)
-gravity = 0.65                              #캐릭터 점프높이의 정도(gravity가 커질수록 점프하는 폭이 작아짐)
-font = pygame.font.Font('DungGeunMo.ttf', 32) #저작권 무료 폰트를 추가했습니다
+scr_size = (width, height) = (600, 200)
+FPS = 60
+gravity = 0.65
+font = pygame.font.Font('DungGeunMo.ttf', 32)
 
 black = (0,0,0)
 white = (255,255,255)
-background_col = (235,235,235)             #배경화면 RGB컬러
+background_col = (235,235,235)
 
 high_score = 0
 resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
@@ -24,7 +24,7 @@ rwidth = resized_screen.get_width()
 rheight = resized_screen.get_height()
 
 clock = pygame.time.Clock()
-pygame.display.set_caption("T-Rex Rush by_OldKokiri")     #게임창의 캡션
+pygame.display.set_caption("T-Rex Rush by_OldKokiri")
 
 bgm_on=True
 on_pushtime=0
@@ -32,9 +32,15 @@ off_pushtime=0
 jump_sound = pygame.mixer.Sound('sprites/jump.wav')
 die_sound = pygame.mixer.Sound('sprites/die.wav')
 checkPoint_sound = pygame.mixer.Sound('sprites/checkPoint.wav')
-#background_music = pygame.mixer.Sound('sprites/t-rex_bgm1.mp3') #일시정지 구현을 위해 기존함수 대신 아랫줄의 다른함수 사용
-pygame.mixer.music.load('sprites/t-rex_bgm1.mp3') #배경음악 지정
+#background_music = pygame.mixer.Sound('sprites/t-rex_bgm1.mp3')
+pygame.mixer.music.load('sprites/t-rex_bgm1.mp3')
 
+dino_size = [44, 47]
+object_size = [40, 40]
+ptera_size = [46, 40]
+collision_immune_time = 500
+shield_time = 2000
+speed_up_limit_count = 700
 
 def load_image(
     name,
