@@ -663,6 +663,9 @@ def credit():
 
         clock.tick(30)
 
+    pygame.quit()
+    quit()
+
 def main():
     db.init_db()
     isGameQuit = introscreen()
