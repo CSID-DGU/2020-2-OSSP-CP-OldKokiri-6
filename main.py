@@ -28,7 +28,7 @@ def introscreen():
     callout_rect.left = width * 0.05
     callout_rect.top = height * 0.4
     '''
-    
+
 
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
     temp_ground_rect.left = width / 20
@@ -43,20 +43,20 @@ def introscreen():
     Background_rect.bottom = height
 
     #introscreen refactoring
-    #between_btn = 50 #버튼간격 
-    
-     
+    #between_btn = 50 #버튼간격
+
+
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
-    
+
     btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
     btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
 
     btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 40, 40, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 40, 40, -1)
     r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 40*rwidth//width, 40*rwidth//width, -1)
-    
-    
+
+
     btn_bgm_on_rect.centerx = width*0.3
     btn_bgm_on_rect.centery = btn_credit_rect.centery
 
@@ -74,7 +74,7 @@ def introscreen():
                         temp_dino.isJumping = True
                         temp_dino.isBlinking = False
                         temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
-                
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     temp_dino.isJumping = True
                     temp_dino.isBlinking = False
@@ -98,12 +98,12 @@ def introscreen():
                             off_pushtime = pygame.time.get_ticks()
                             if off_pushtime-on_pushtime>500:
                                 bgm_on=False
-                            
+
                         if r_btn_bgm_on_rect.collidepoint(x, y) and not bgm_on:
                             on_pushtime = pygame.time.get_ticks()
                             if on_pushtime-off_pushtime>500:
                                 bgm_on=True
-                            
+
 
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
@@ -111,7 +111,7 @@ def introscreen():
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
         temp_dino.update()
-        
+
         if pygame.display.get_surface() != None:
             screen.fill(background_col)
             screen.blit(temp_ground[0], temp_ground_rect)
@@ -131,7 +131,7 @@ def introscreen():
             if temp_dino.isBlinking:
                 screen.blit(logo, logo_rect)
                 #screen.blit(callout, callout_rect)
-            temp_dino.draw()   
+            temp_dino.draw()
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
             pygame.display.update()
@@ -145,7 +145,7 @@ def introscreen():
     quit()
 
 
-def gameplay():   
+def gameplay():
     global high_score
     if bgm_on:
         pygame.mixer.music.play(-1) # 배경음악 실행
@@ -170,12 +170,14 @@ def gameplay():
     last_obstacle = pygame.sprite.Group()
     shield_items = pygame.sprite.Group()
     life_items = pygame.sprite.Group()
+    slow_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
     LifeItem.containers = life_items
+    SlowItem.containers = slow_items
 
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
@@ -307,6 +309,13 @@ def gameplay():
                         life += 1
                         l.kill()
 
+                for k in slow_items:
+                    k.movement[0] = -1 * gamespeed
+                    if pygame.sprite.collide_mask(playerDino, k):
+                        gamespeed -= 1
+                        new_ground.speed += 1
+                        k.kill()
+
                 if len(cacti) < 2:
                     if len(cacti) == 0:
                         last_obstacle.empty()
@@ -338,6 +347,12 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, 40, 40))
 
+                if len(slow_items) == 0 and random.randrange(0, 500) == 10 and counter > 500:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(SlowItem(gamespeed, 45, 40))
+
                 playerDino.update()
                 cacti.update()
                 pteras.update()
@@ -348,6 +363,7 @@ def gameplay():
                 scb.update(playerDino.score)
                 highsc.update(high_score)
                 heart.update(life)
+                slow_items.update()
 
                 if pygame.display.get_surface() != None:
                     screen.fill(background_col)
@@ -362,6 +378,7 @@ def gameplay():
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
+                    slow_items.draw(screen)
                     playerDino.draw()
                     resized_screen.blit(
                         pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
@@ -552,7 +569,7 @@ def pausing():
 def typescore():
     done = False
     active = True
-    
+
     message_pos = (80,50)
     typebox_size = 100
     letternum_restriction=3
@@ -585,7 +602,7 @@ def typescore():
                     if event.unicode.isalpha()==True:
                         if len(text)<letternum_restriction:
                             text += event.unicode
-                            
+
             if event.type == pygame.VIDEORESIZE:
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
 
@@ -629,7 +646,7 @@ def credit():
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
                 (0, 0))
         pygame.display.update()
-       
+
         clock.tick(30)
 
 def main():
