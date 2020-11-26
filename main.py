@@ -146,6 +146,7 @@ def introscreen():
 
 
 def gameplay():
+    global resized_screen
     global high_score
     if bgm_on:
         pygame.mixer.music.play(-1) # 배경음악 실행
@@ -244,7 +245,7 @@ def gameplay():
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도
                         if (event.w < 600 and event.h < 150) or event.w < 600 or event.h < 150:
-                            global resized_screen
+                            
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             if not paused:
@@ -454,6 +455,7 @@ def gameplay():
 
 
 def board():
+    global resized_screen
     gameQuit = False
     results = db.query_db("select username, score from user order by score desc;")
 
@@ -490,7 +492,7 @@ def board():
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        global resized_screen
+                        
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             resized_screen.blit(
@@ -567,14 +569,13 @@ def pausing():
     quit()
 
 def typescore():
+    global resized_screen
     done = False
     active = True
 
     message_pos = (80,50)
     typebox_size = 100
     letternum_restriction=3
-
-    screen = pygame.display.set_mode((600, 200))
     clock = pygame.time.Clock()
     input_box = pygame.Rect(250, 100, 300, 40)
     #color_inactive = pygame.Color('lightskyblue3')
@@ -615,8 +616,12 @@ def typescore():
 
         screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
         screen.blit(text2,message_pos)
-
         pygame.draw.rect(screen, color, input_box, 2)
+        resized_screen.blit(
+                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
+                (0, 0))
+
+        
 
         pygame.display.flip()
         clock.tick(30)
