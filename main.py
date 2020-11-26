@@ -9,7 +9,7 @@ from src.cloud import *
 from src.scoreboard import *
 from src.item import *
 from src.heart import *
-from src.slow import *
+#from src.slow import *
 import db.db_interface as dbi
 
 db = dbi.InterfDB("db/score.db")
@@ -348,7 +348,7 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, 40, 40))
 
-                if len(slow_items) == 0 and random.randrange(0, 350) == 10 and counter > 500:
+                if len(slow_items) == 0 and random.randrange(0, 500) == 10 and counter > 500:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
