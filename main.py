@@ -41,6 +41,8 @@ def introscreen():
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
+    
+    init_btn_image, init_btn_rect = load_image('replay_button.png', 35, 31, -1)
 
     #introscreen refactoring
     #between_btn = 50 #버튼간격
@@ -59,6 +61,8 @@ def introscreen():
 
     btn_bgm_on_rect.centerx = width*0.3
     btn_bgm_on_rect.centery = btn_credit_rect.centery
+    init_btn_rect.centerx = width * 0.4
+    init_btn_rect.centery = btn_credit_rect.centery
 
     while not gameStart:
         if pygame.display.get_surface() == None:
@@ -103,6 +107,11 @@ def introscreen():
                             on_pushtime = pygame.time.get_ticks()
                             if on_pushtime-off_pushtime>500:
                                 bgm_on=True
+                                
+                        if init_btn_rect.collidepoint(x, y):
+                            print(10)
+                            db.query_db("delete from user;")
+                            db.commit()
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
@@ -120,6 +129,7 @@ def introscreen():
             screen.blit(btn_gamestart, btn_gamestart_rect)
             screen.blit(btn_board, btn_board_rect)
             screen.blit(btn_credit, btn_credit_rect)
+            screen.blit(init_btn_image, init_btn_rect)
 
             if bgm_on:
                 screen.blit(btn_bgm_on, btn_bgm_on_rect)
@@ -407,10 +417,7 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
-                    '''
-                    db.query_db(f"insert into user(username, score) values ('nnn', '{playerDino.score}');")
-                    db.commit()
-'''
+                        
                 if counter % speed_up_limit_count == speed_up_limit_count - 1:
                     new_ground.speed -= 1
                     gamespeed += 1
@@ -473,6 +480,7 @@ def gameplay():
 def board():
     global resized_screen
     gameQuit = False
+    
     results = db.query_db("select username, score from user order by score desc;")
 
     while not gameQuit:
