@@ -20,6 +20,7 @@ background_col = (235,235,235)
 high_score = 0
 resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 screen = resized_screen.copy()
+resized_screen_centerpos = (0,0)
 rwidth = resized_screen.get_width()
 rheight = resized_screen.get_height()
 

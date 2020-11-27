@@ -21,15 +21,11 @@ def introscreen():
     temp_dino = Dino(dino_size[0], dino_size[1])
     temp_dino.isBlinking = True
     gameStart = False
-
     between_btn = 0.25
-    '''
-    callout, callout_rect = load_image('call_out.png', 196, 45, -1)
-    callout_rect.left = width * 0.05
-    callout_rect.top = height * 0.4
-    '''
+    btnpush_interval = 500 #ms
+    
 
-
+    #BACKGROUND IMG LOAD & POS
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
     temp_ground_rect.left = width / 20
     temp_ground_rect.bottom = height
@@ -42,10 +38,7 @@ def introscreen():
     Background_rect.left = width*0
     Background_rect.bottom = height
 
-    #introscreen refactoring
-    #between_btn = 50 #버튼간격
-
-
+    #BUTTON IMG LOAD & POS
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
@@ -55,7 +48,6 @@ def introscreen():
 
     btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 40, 40, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 40, 40, -1)
     r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 40*rwidth//width, 40*rwidth//width, -1)
-
 
     btn_bgm_on_rect.centerx = width*0.3
     btn_bgm_on_rect.centery = btn_credit_rect.centery
@@ -96,12 +88,12 @@ def introscreen():
 
                         if r_btn_bgm_on_rect.collidepoint(x, y) and bgm_on:
                             off_pushtime = pygame.time.get_ticks()
-                            if off_pushtime-on_pushtime>500:
+                            if off_pushtime-on_pushtime>btnpush_interval:
                                 bgm_on=False
 
                         if r_btn_bgm_on_rect.collidepoint(x, y) and not bgm_on:
                             on_pushtime = pygame.time.get_ticks()
-                            if on_pushtime-off_pushtime>500:
+                            if on_pushtime-off_pushtime>btnpush_interval:
                                 bgm_on=True
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
@@ -136,7 +128,7 @@ def introscreen():
                 #screen.blit(callout, callout_rect)
             temp_dino.draw()
             resized_screen.blit(
-                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
+                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
             pygame.display.update()
 
         clock.tick(FPS)
@@ -185,6 +177,7 @@ def gameplay():
     SlowItem.containers = slow_items
     HighJumpItem.containers = highjump_items
 
+    #BUTTON IMG LOAD
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
 
@@ -404,7 +397,7 @@ def gameplay():
                     highjump_items.draw(screen)
                     playerDino.draw()
                     resized_screen.blit(
-                        pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
+                        pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
                     pygame.display.update()
                 clock.tick(FPS)
 
@@ -472,7 +465,7 @@ def gameplay():
                     highsc.draw()
                     screen.blit(HI_image, HI_rect)
                 resized_screen.blit(
-                    pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
+                    pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
                 pygame.display.update()
             clock.tick(FPS)
 
@@ -525,7 +518,7 @@ def board():
                             resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
 
             resized_screen.blit(
-                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
+                pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
 
             pygame.display.update()
         clock.tick(FPS)
@@ -543,12 +536,20 @@ def pausing():
 
     pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
 
+    #BUTTON IMG LOAD
     retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
     resume_image, resume_rect = load_image('continue_button.png', 35, 31, -1)
-    ###
+
     resized_retbutton_image, resized_retbutton_rect = load_image('main_button.png', 35*resized_screen.get_width()//width, 31*resized_screen.get_height()//height, -1)
     resized_resume_image, resized_resume_rect = load_image('continue_button.png', 35*resized_screen.get_width()//width, 31*resized_screen.get_height()//height, -1)
-    ###
+
+    #BUTTONPOS
+    retbutton_rect.centerx = width * 0.4 ; retbutton_rect.top = height * 0.52
+    resume_rect.centerx = width * 0.6 ; resume_rect.top = height * 0.52
+
+    resized_retbutton_rect.centerx = resized_screen.get_width() * 0.4 ; resized_retbutton_rect.top = resized_screen.get_height() * 0.52
+    resized_resume_rect.centerx = resized_screen.get_width() * 0.6 ; resized_resume_rect.top = resized_screen.get_height() * 0.52
+
     while not gameQuit:
         if pygame.display.get_surface() is None:
             print("Couldn't load display surface")
@@ -584,17 +585,11 @@ def pausing():
 
             screen.fill(white)
             screen.blit(pause_pic, pause_pic_rect)
-            retbutton_rect.centerx = width * 0.4 ; retbutton_rect.top = height * 0.52
-            resume_rect.centerx = width * 0.6 ; resume_rect.top = height * 0.52
-            ###
-            resized_retbutton_rect.centerx = resized_screen.get_width() * 0.4 ; resized_retbutton_rect.top = resized_screen.get_height() * 0.52
-            resized_resume_rect.centerx = resized_screen.get_width() * 0.6 ; resized_resume_rect.top = resized_screen.get_height() * 0.52
-            ###
             screen.blit(retbutton_image, retbutton_rect)
             screen.blit(resume_image, resume_rect)
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
-                (0, 0))
+                resized_screen_centerpos)
             pygame.display.update()
         clock.tick(FPS)
 
@@ -648,20 +643,16 @@ def typescore():
 
         screen.fill(white)
         txt_surface = font.render(text.upper(), True, color)
-        width = max(typebox_size, txt_surface.get_width()+10)
-        input_box.w = width
-
+        input_box.w = typebox_size
         screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
         screen.blit(text2,message_pos)
         pygame.draw.rect(screen, color, input_box, 2)
         resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
-                (0, 0))
-
-        
+                resized_screen_centerpos)
 
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick(FPS)
 
 def credit():
     global resized_screen
@@ -689,10 +680,10 @@ def credit():
         screen.blit(creditimg, creditimg_rect)
         resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
-                (0, 0))
+                resized_screen_centerpos)
         pygame.display.update()
 
-        clock.tick(30)
+        clock.tick(FPS)
 
     pygame.quit()
     quit()
