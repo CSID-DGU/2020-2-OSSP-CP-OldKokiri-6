@@ -129,8 +129,12 @@ def disp_intro_buttons(btn_gamestart,btn_board,btn_credit):
     screen.blit(btn_board, btn_board_rect)
     screen.blit(btn_credit, btn_credit_rect)
 
+def imgresizer(img, rect):
+    
+
+
 def checkscrsize(eventw, eventh):
-    if (eventw < width and eventh < height) or eventw < width or eventh < height:
+    if (eventw < width and eventh < height) or eventw < width or eventh < height: #최소해상도
         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
     else:
         if eventw/eventh!=width/height: #고정화면비

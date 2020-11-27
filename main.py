@@ -45,7 +45,7 @@ def introscreen():
     Background_rect.bottom = height
     #BUTTONPOS
     btn_bgm_on_rect.centerx = width*0.3
-    btn_bgm_on_rect.centery = btn_credit_rect.centery
+    btn_bgm_on_rect.centery = height * (0.33+2*between_btn)
 
     while not gameStart:
         if pygame.display.get_surface() == None:
@@ -564,6 +564,7 @@ def pausing():
 
 def typescore():
     global resized_screen
+    global gamername
     done = False
     active = True
 
@@ -571,9 +572,7 @@ def typescore():
     typebox_size = 100
     letternum_restriction=3
     screen = pygame.display.set_mode(scr_size)
-    clock = pygame.time.Clock()
     input_box = pygame.Rect(250, 100, 300, 40)
-    #color_inactive = pygame.Color('lightskyblue3')
     color = pygame.Color('dodgerblue2')
 
     text = ''
@@ -589,7 +588,6 @@ def typescore():
             if event.type == pygame.KEYDOWN:
                 #if active:
                 if event.key == pygame.K_RETURN:
-                    global gamername
                     gamername=text.upper()
                     done=True
                 elif event.key == pygame.K_BACKSPACE:
