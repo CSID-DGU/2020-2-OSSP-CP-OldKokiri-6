@@ -23,6 +23,7 @@ screen = resized_screen.copy()
 resized_screen_centerpos = (0,0)
 rwidth = resized_screen.get_width()
 rheight = resized_screen.get_height()
+between_btn = 0.25
 
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush by_OldKokiri")
@@ -104,7 +105,6 @@ def load_sprite_sheet(
 
     return sprites,sprite_rect
 
-
 def disp_gameOver_msg(retbutton_image,gameover_image):
     retbutton_rect = retbutton_image.get_rect()
     retbutton_rect.centerx = width / 2
@@ -117,6 +117,25 @@ def disp_gameOver_msg(retbutton_image,gameover_image):
     screen.blit(retbutton_image, retbutton_rect)
     screen.blit(gameover_image, gameover_rect)
 
+def disp_intro_buttons(btn_gamestart,btn_board,btn_credit):
+    btn_gamestart_rect = btn_gamestart.get_rect()
+    btn_board_rect = btn_board.get_rect()
+    btn_credit_rect = btn_credit.get_rect()
+
+    btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
+    btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
+    
+    screen.blit(btn_gamestart, btn_gamestart_rect)
+    screen.blit(btn_board, btn_board_rect)
+    screen.blit(btn_credit, btn_credit_rect)
+
+def checkscrsize(eventw, eventh):
+    if (eventw < width and eventh < height) or eventw < width or eventh < height:
+        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+    else:
+        if eventw/eventh!=width/height: #고정화면비
+            adjusted_height=int(eventw/(width/height))
+            resized_screen = pygame.display.set_mode((eventw,adjusted_height), RESIZABLE)
 
 def extractDigits(number):
     if number > -1:

@@ -21,34 +21,29 @@ def introscreen():
     temp_dino = Dino(dino_size[0], dino_size[1])
     temp_dino.isBlinking = True
     gameStart = False
-    between_btn = 0.25
     btnpush_interval = 500 #ms
     
-
-    #BACKGROUND IMG LOAD & POS
+    ###IMGLOAD###
+    #BACKGROUND IMG LOAD
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
-    temp_ground_rect.left = width / 20
-    temp_ground_rect.bottom = height
-
     logo, logo_rect = load_image('logo.png', 180, 30, -1)
-    logo_rect.centerx = width * 0.22
-    logo_rect.centery = height * 0.3
-
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
-    Background_rect.left = width*0
-    Background_rect.bottom = height
-
-    #BUTTON IMG LOAD & POS
+    #BUTTON IMG LOAD
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
-
-    btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
-    btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
-
     btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 40, 40, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 40, 40, -1)
     r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 40*rwidth//width, 40*rwidth//width, -1)
-
+    
+    ###IMGPOS###
+    #BACKGROUND IMG POS
+    temp_ground_rect.left = width / 20
+    temp_ground_rect.bottom = height
+    logo_rect.centerx = width * 0.22
+    logo_rect.centery = height * 0.3
+    Background_rect.left = width*0
+    Background_rect.bottom = height
+    #BUTTONPOS
     btn_bgm_on_rect.centerx = width*0.3
     btn_bgm_on_rect.centery = btn_credit_rect.centery
 
@@ -95,16 +90,9 @@ def introscreen():
                             on_pushtime = pygame.time.get_ticks()
                             if on_pushtime-off_pushtime>btnpush_interval:
                                 bgm_on=True
-
-                if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                    if (event.w < width and event.h < height) or event.w < width or event.h < height:           
-                        
-                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-                    else:
-                        if event.w/event.h!=width/height: #고정화면비
-                            adjusted_height=int(event.w/(width/height))
-                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
-
+                if event.type == pygame.VIDEORESIZE:
+                    checkscrsize(event.w, event.h)
+                
         temp_dino.update()
 
         if pygame.display.get_surface() != None:
@@ -113,9 +101,7 @@ def introscreen():
             r_btn_gamestart_rect.centerx, r_btn_board_rect.centerx, r_btn_credit_rect.centerx = resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72
             r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = resized_screen.get_height() * 0.33, resized_screen.get_height() * (0.33+between_btn), resized_screen.get_height() * (0.33+2*between_btn)
             screen.blit(Background, Background_rect)
-            screen.blit(btn_gamestart, btn_gamestart_rect)
-            screen.blit(btn_board, btn_board_rect)
-            screen.blit(btn_credit, btn_credit_rect)
+            disp_intro_buttons(btn_gamestart, btn_board, btn_credit)
 
             if bgm_on:
                 screen.blit(btn_bgm_on, btn_bgm_on_rect)
@@ -241,13 +227,8 @@ def gameplay():
                     if event.type == pygame.MOUSEBUTTONUP:
                         playerDino.isDucking = False
 
-                    if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                        if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                            resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-                        else:
-                            if event.w/event.h!=width/height: #고정화면비
-                                adjusted_height=int(event.w/(width/height))
-                                resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
+                    if event.type == pygame.VIDEORESIZE:
+                        checkscrsize(event.w, event.h)
 
             if not paused:
                 for c in cacti:
@@ -450,13 +431,8 @@ def gameplay():
                         db.commit()
                         board()
 
-                    if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                        if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                            resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-                        else:
-                            if event.w/event.h!=width/height: #고정화면비
-                                adjusted_height=int(event.w/(width/height))
-                                resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
+                    if event.type == pygame.VIDEORESIZE:
+                        checkscrsize(event.w, event.h)
 
             highsc.update(high_score)
             if pygame.display.get_surface() != None:
@@ -509,13 +485,8 @@ def board():
                     gameQuit = True
                     introscreen()
 
-                if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
-                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-                    else:
-                        if event.w/event.h!=width/height: #고정화면비
-                            adjusted_height=int(event.w/(width/height))
-                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
+                if event.type == pygame.VIDEORESIZE:
+                    checkscrsize(event.w, event.h)
 
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
@@ -576,12 +547,7 @@ def pausing():
                             return False
 
                 if event.type == pygame.VIDEORESIZE:
-                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-                    else:
-                        if event.w/event.h!=width/height: #고정화면비
-                            adjusted_height=int(event.w/(width/height))
-                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
+                    checkscrsize(event.w, event.h)
 
             screen.fill(white)
             screen.blit(pause_pic, pause_pic_rect)
@@ -634,12 +600,7 @@ def typescore():
                             text += event.unicode
 
             if event.type == pygame.VIDEORESIZE:
-                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-                    else:
-                        if event.w/event.h!=width/height: #고정화면비
-                            adjusted_height=int(event.w/(width/height))
-                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
+                checkscrsize(event.w, event.h)
 
         screen.fill(white)
         txt_surface = font.render(text.upper(), True, color)
@@ -670,12 +631,7 @@ def credit():
                 if event.key == pygame.K_ESCAPE:
                     return False
             if event.type == pygame.VIDEORESIZE:
-                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-                    else:
-                        if event.w/event.h!=width/height: #고정화면비
-                            adjusted_height=int(event.w/(width/height))
-                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
+                checkscrsize(event.w, event.h)
         screen.fill(white)
         screen.blit(creditimg, creditimg_rect)
         resized_screen.blit(
