@@ -508,7 +508,7 @@ def board():
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        
+
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
             resized_screen.blit(
@@ -638,7 +638,7 @@ def typescore():
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
                 (0, 0))
 
-        
+
 
         pygame.display.flip()
         clock.tick(30)
