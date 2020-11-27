@@ -105,9 +105,13 @@ def introscreen():
                                 bgm_on=True
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        global resized_screen
+                    if (event.w < width and event.h < height) or event.w < width or event.h < height:           
+                        
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+                    else:
+                        if event.w/event.h!=width/height: #고정화면비
+                            adjusted_height=int(event.w/(width/height))
+                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
 
         temp_dino.update()
 
@@ -246,9 +250,11 @@ def gameplay():
 
                     if event.type == pygame.VIDEORESIZE:  # 최소해상도
                         if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                            global resized_screen
-
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+                        else:
+                            if event.w/event.h!=width/height: #고정화면비
+                                adjusted_height=int(event.w/(width/height))
+                                resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
 
             if not paused:
                 for c in cacti:
@@ -451,9 +457,13 @@ def gameplay():
                         db.commit()
                         board()
 
-                    if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
+                    if event.type == pygame.VIDEORESIZE:  # 최소해상도
                         if (event.w < width and event.h < height) or event.w < width or event.h < height:
                             resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+                        else:
+                            if event.w/event.h!=width/height: #고정화면비
+                                adjusted_height=int(event.w/(width/height))
+                                resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
 
             highsc.update(high_score)
             if pygame.display.get_surface() != None:
@@ -508,8 +518,11 @@ def board():
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도 #버그있음
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+                    else:
+                        if event.w/event.h!=width/height: #고정화면비
+                            adjusted_height=int(event.w/(width/height))
+                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
 
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), (0, 0))
@@ -563,8 +576,12 @@ def pausing():
 
                 if event.type == pygame.VIDEORESIZE:
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
-
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+                    else:
+                        if event.w/event.h!=width/height: #고정화면비
+                            adjusted_height=int(event.w/(width/height))
+                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
+
             screen.fill(white)
             screen.blit(pause_pic, pause_pic_rect)
             retbutton_rect.centerx = width * 0.4 ; retbutton_rect.top = height * 0.52
@@ -623,8 +640,11 @@ def typescore():
 
             if event.type == pygame.VIDEORESIZE:
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
-
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+                    else:
+                        if event.w/event.h!=width/height: #고정화면비
+                            adjusted_height=int(event.w/(width/height))
+                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
 
         screen.fill(white)
         txt_surface = font.render(text.upper(), True, color)
@@ -660,8 +680,11 @@ def credit():
                     return False
             if event.type == pygame.VIDEORESIZE:
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
-
                         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+                    else:
+                        if event.w/event.h!=width/height: #고정화면비
+                            adjusted_height=int(event.w/(width/height))
+                            resized_screen = pygame.display.set_mode((event.w,adjusted_height), RESIZABLE)
         screen.fill(white)
         screen.blit(creditimg, creditimg_rect)
         resized_screen.blit(
