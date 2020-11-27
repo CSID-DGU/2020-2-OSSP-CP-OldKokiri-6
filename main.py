@@ -109,7 +109,6 @@ def introscreen():
                                 bgm_on=True
                                 
                         if init_btn_rect.collidepoint(x, y):
-                            print(10)
                             db.query_db("delete from user;")
                             db.commit()
 
@@ -172,7 +171,10 @@ def gameplay():
     scb = Scoreboard()
     highsc = Scoreboard(width * 0.78)
     heart = HeartIndicator(life)
+    speed_indicator = Scoreboard(width * 0.12, height * 0.15)
     counter = 0
+    
+    speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
@@ -345,7 +347,7 @@ def gameplay():
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
-                if len(pteras) == 0 and random.randrange(0, 200) == 10 and counter > 500:
+                if len(pteras) == 0 and random.randrange(0, 100) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
@@ -360,19 +362,19 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(ShieldItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(life_items) == 0 and random.randrange(0, 300) == 10 and counter > 400:
+                if len(life_items) == 0 and random.randrange(0, 300) == 10 and counter > 1000:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(slow_items) == 0 and random.randrange(0, 500) == 10 and counter > 500:
+                if len(slow_items) == 0 and random.randrange(0, 500) == 10 and counter > 1000:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(SlowItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(highjump_items) == 0 and random.randrange(0, 300) == 10 and counter > 300:
+                if len(highjump_items) == 0 and random.randrange(0, 100) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
@@ -388,6 +390,7 @@ def gameplay():
                 new_ground.update()
                 scb.update(playerDino.score)
                 highsc.update(high_score)
+                speed_indicator.update(gamespeed - 3)
                 heart.update(life)
                 slow_items.update()
 
@@ -396,6 +399,8 @@ def gameplay():
                     new_ground.draw()
                     clouds.draw(screen)
                     scb.draw()
+                    speed_indicator.draw()
+                    screen.blit(speed_text, (width*0.01, height * 0.13))
                     heart.draw()
                     if high_score != 0:
                         highsc.draw()
@@ -683,7 +688,6 @@ def credit():
     quit()
 
 def main():
-    db.init_db()
     isGameQuit = introscreen()
     if not isGameQuit:
         introscreen()
