@@ -104,7 +104,7 @@ def introscreen():
 
                 if event.type == pygame.VIDEORESIZE:
                     checkscrsize(event.w, event.h)
-                
+
         temp_dino.update()
 
         if pygame.display.get_surface() != None:
@@ -284,6 +284,8 @@ def gameplay():
                     for s in shield_items:
                         s.movement[0] = -1 * gamespeed
                         if pygame.sprite.collide_mask(playerDino, s):
+                            if pygame.mixer.get_init() is not None:
+                                checkPoint_sound.play()
                             playerDino.collision_immune = True
                             playerDino.isSuper = True
                             s.kill()
@@ -292,6 +294,8 @@ def gameplay():
                     for s in shield_items:
                         s.movement[0] = -1 * gamespeed
                         if pygame.sprite.collide_mask(playerDino, s):
+                            if pygame.mixer.get_init() is not None:
+                                checkPoint_sound.play()
                             playerDino.collision_immune = True
                             playerDino.isSuper = True
                             s.kill()
@@ -304,12 +308,16 @@ def gameplay():
                 for l in life_items:
                     l.movement[0] = -1 * gamespeed
                     if pygame.sprite.collide_mask(playerDino, l):
+                        if pygame.mixer.get_init() is not None:
+                            checkPoint_sound.play()
                         life += 1
                         l.kill()
 
                 for k in slow_items:
                     k.movement[0] = -1 * gamespeed
                     if pygame.sprite.collide_mask(playerDino, k):
+                        if pygame.mixer.get_init() is not None:
+                            checkPoint_sound.play()
                         gamespeed -= 1
                         new_ground.speed += 1
                         k.kill()
@@ -317,6 +325,8 @@ def gameplay():
                 for h in highjump_items:
                     h.movement[0] = -1 * gamespeed
                     if pygame.sprite.collide_mask(playerDino, h):
+                        if pygame.mixer.get_init() is not None:
+                            jump_sound.play()
                         playerDino.isJumping = True
                         playerDino.movement[1] = -1 * playerDino.superJumpSpeed
 
