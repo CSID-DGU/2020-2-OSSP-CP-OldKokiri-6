@@ -97,13 +97,13 @@ def introscreen():
                             on_pushtime = pygame.time.get_ticks()
                             if on_pushtime-off_pushtime>btnpush_interval:
                                 bgm_on=True
-                                
-                if event.type == pygame.VIDEORESIZE:
-                    checkscrsize(event.w, event.h)
-           
+
                         if init_btn_rect.collidepoint(x, y):
                             db.query_db("delete from user;")
                             db.commit()
+
+                if event.type == pygame.VIDEORESIZE:
+                    checkscrsize(event.w, event.h)
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:

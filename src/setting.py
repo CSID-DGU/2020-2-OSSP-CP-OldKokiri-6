@@ -129,7 +129,7 @@ def disp_intro_buttons(btn_gamestart,btn_board,btn_credit):
     screen.blit(btn_board, btn_board_rect)
     screen.blit(btn_credit, btn_credit_rect)
 
-def imgresizer(img, rect):
+# def imgresizer(img, rect):
     
 
 
