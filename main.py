@@ -41,6 +41,8 @@ def introscreen():
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
+    
+    init_btn_image, init_btn_rect = load_image('replay_button.png', 35, 31, -1)
 
     #introscreen refactoring
     #between_btn = 50 #버튼간격
@@ -59,6 +61,8 @@ def introscreen():
 
     btn_bgm_on_rect.centerx = width*0.3
     btn_bgm_on_rect.centery = btn_credit_rect.centery
+    init_btn_rect.centerx = width * 0.4
+    init_btn_rect.centery = btn_credit_rect.centery
 
     while not gameStart:
         if pygame.display.get_surface() == None:
@@ -103,6 +107,10 @@ def introscreen():
                             on_pushtime = pygame.time.get_ticks()
                             if on_pushtime-off_pushtime>500:
                                 bgm_on=True
+                                
+                        if init_btn_rect.collidepoint(x, y):
+                            db.query_db("delete from user;")
+                            db.commit()
 
                 if event.type == pygame.VIDEORESIZE:  # 최소해상도
                     if (event.w < width and event.h < height) or event.w < width or event.h < height:
@@ -120,6 +128,7 @@ def introscreen():
             screen.blit(btn_gamestart, btn_gamestart_rect)
             screen.blit(btn_board, btn_board_rect)
             screen.blit(btn_credit, btn_credit_rect)
+            screen.blit(init_btn_image, init_btn_rect)
 
             if bgm_on:
                 screen.blit(btn_bgm_on, btn_bgm_on_rect)
@@ -162,7 +171,10 @@ def gameplay():
     scb = Scoreboard()
     highsc = Scoreboard(width * 0.78)
     heart = HeartIndicator(life)
+    speed_indicator = Scoreboard(width * 0.12, height * 0.15)
     counter = 0
+    
+    speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
@@ -184,14 +196,14 @@ def gameplay():
     retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
 
-    temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
-    HI_image = pygame.Surface((22, int(11 * 6 / 5)))
+    temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(15 * 6 / 5), -1)
+    HI_image = pygame.Surface((30, int(15 * 6 / 5)))
     HI_rect = HI_image.get_rect()
     HI_image.fill(background_col)
     HI_image.blit(temp_images[10], temp_rect)
     temp_rect.left += temp_rect.width
     HI_image.blit(temp_images[11], temp_rect)
-    HI_rect.top = height * 0.1
+    HI_rect.top = height * 0.05
     HI_rect.left = width * 0.73
 
     while not gameQuit:
@@ -335,7 +347,7 @@ def gameplay():
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
-                if len(pteras) == 0 and random.randrange(0, 200) == 10 and counter > 500:
+                if len(pteras) == 0 and random.randrange(0, 100) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
@@ -350,19 +362,19 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(ShieldItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(life_items) == 0 and random.randrange(0, 300) == 10 and counter > 400:
+                if len(life_items) == 0 and random.randrange(0, 300) == 10 and counter > 1000:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(slow_items) == 0 and random.randrange(0, 500) == 10 and counter > 500:
+                if len(slow_items) == 0 and random.randrange(0, 500) == 10 and counter > 1000:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(SlowItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(highjump_items) == 0 and random.randrange(0, 300) == 10 and counter > 300:
+                if len(highjump_items) == 0 and random.randrange(0, 100) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
@@ -378,6 +390,7 @@ def gameplay():
                 new_ground.update()
                 scb.update(playerDino.score)
                 highsc.update(high_score)
+                speed_indicator.update(gamespeed - 3)
                 heart.update(life)
                 slow_items.update()
 
@@ -386,6 +399,8 @@ def gameplay():
                     new_ground.draw()
                     clouds.draw(screen)
                     scb.draw()
+                    speed_indicator.draw()
+                    screen.blit(speed_text, (width*0.01, height * 0.13))
                     heart.draw()
                     if high_score != 0:
                         highsc.draw()
@@ -407,10 +422,7 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
-                    '''
-                    db.query_db(f"insert into user(username, score) values ('nnn', '{playerDino.score}');")
-                    db.commit()
-'''
+                        
                 if counter % speed_up_limit_count == speed_up_limit_count - 1:
                     new_ground.speed -= 1
                     gamespeed += 1
@@ -473,6 +485,7 @@ def gameplay():
 def board():
     global resized_screen
     gameQuit = False
+    
     results = db.query_db("select username, score from user order by score desc;")
 
     while not gameQuit:
@@ -675,7 +688,6 @@ def credit():
     quit()
 
 def main():
-    db.init_db()
     isGameQuit = introscreen()
     if not isGameQuit:
         introscreen()
