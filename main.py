@@ -104,12 +104,7 @@ def introscreen():
 
                 if event.type == pygame.VIDEORESIZE:
                     checkscrsize(event.w, event.h)
-
-                if event.type == pygame.VIDEORESIZE:  # 최소해상도
-                    if (event.w < width and event.h < height) or event.w < width or event.h < height:
-                        global resized_screen
-                        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-
+                
         temp_dino.update()
 
         if pygame.display.get_surface() != None:
