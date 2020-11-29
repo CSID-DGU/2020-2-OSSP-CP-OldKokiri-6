@@ -41,7 +41,7 @@ def introscreen():
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
-    
+
     init_btn_image, init_btn_rect = load_image('replay_button.png', 35, 31, -1)
 
     #introscreen refactoring
@@ -107,7 +107,7 @@ def introscreen():
                             on_pushtime = pygame.time.get_ticks()
                             if on_pushtime-off_pushtime>500:
                                 bgm_on=True
-                                
+
                         if init_btn_rect.collidepoint(x, y):
                             db.query_db("delete from user;")
                             db.commit()
@@ -173,7 +173,7 @@ def gameplay():
     heart = HeartIndicator(life)
     speed_indicator = Scoreboard(width * 0.12, height * 0.15)
     counter = 0
-    
+
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
@@ -422,7 +422,7 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
-                        
+
                 if counter % speed_up_limit_count == speed_up_limit_count - 1:
                     new_ground.speed -= 1
                     gamespeed += 1
@@ -485,7 +485,7 @@ def gameplay():
 def board():
     global resized_screen
     gameQuit = False
-    
+
     results = db.query_db("select username, score from user order by score desc;")
 
     while not gameQuit:
