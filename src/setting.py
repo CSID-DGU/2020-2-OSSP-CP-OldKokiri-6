@@ -12,6 +12,7 @@ scr_size = (width, height) = (900, 300)
 FPS = 60
 gravity = 0.65
 font = pygame.font.Font('DungGeunMo.ttf', 32)
+typescore_font = pygame.font.Font('DungGeunMo.ttf', 50)
 
 black = (0,0,0)
 white = (255,255,255)

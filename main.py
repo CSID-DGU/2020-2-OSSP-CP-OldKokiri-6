@@ -82,7 +82,8 @@ def introscreen():
                             board()
 
                         if r_btn_credit_rect.collidepoint(x, y):
-                            credit()
+                            typescore()
+                            #credit
 
                         if r_btn_bgm_on_rect.collidepoint(x, y) and bgm_on:
                             off_pushtime = pygame.time.get_ticks()
@@ -507,6 +508,9 @@ def board():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 4: scroll_y = min(scroll_y + 15, 0)
                     if event.button == 5: scroll_y = max(scroll_y - 15, -resized_screen.get_height())
+                    if event.button == 1:
+                        gameQuit = True
+                        introscreen()
                 if event.type == pygame.VIDEORESIZE:
                     checkscrsize(event.w, event.h)
 
@@ -592,13 +596,11 @@ def typescore():
     active = True
 
     
-    message_pos = (width*0.2, height*0.5)
-    inputbox_pos = (width*0.5, height*0.5)
+    message_pos = (width*0.25, height*0.3)
+    inputbox_pos = (width*0.43, height*0.5)
     typebox_size = 100
     letternum_restriction=3
-    input_box = pygame.Rect(250, 100, 300, 40)
-    input_box.centerx=inputbox_pos[0]
-    input_box.centery=inputbox_pos[1]
+    input_box = pygame.Rect(inputbox_pos[0], inputbox_pos[1], 500, 50)
     color = pygame.Color('dodgerblue2')
 
     text = ''
@@ -626,9 +628,9 @@ def typescore():
                 checkscrsize(event.w, event.h)
 
         screen.fill(white)
-        txt_surface = font.render(text.upper(), True, color)
+        txt_surface = typescore_font.render(text.upper(), True, color)
         input_box.w = typebox_size
-        screen.blit(txt_surface, (input_box.centerx, input_box.y+5))
+        screen.blit(txt_surface, (input_box.centerx-len(text)*11-5, input_box.y))
         screen.blit(text2,message_pos)
         pygame.draw.rect(screen, color, input_box, 2)
         resized_screen.blit(
