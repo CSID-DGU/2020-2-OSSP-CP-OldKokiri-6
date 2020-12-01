@@ -473,8 +473,9 @@ def gameplay():
 
 def board():
     global resized_screen
+    screen_board = pygame.surface.Surface((resized_screen.get_width(), resized_screen.get_height()*2))
     gameQuit = False
-    
+    scroll_y=0
     results = db.query_db("select username, score from user order by score desc;")
 
     while not gameQuit:
@@ -483,7 +484,7 @@ def board():
             gameQuit = True
 
         else:
-            screen.fill(background_col)
+            screen_board.fill(background_col)
 
             for i, result in enumerate(results):
                 name_inform_surface = font.render("Name", True, black)
@@ -491,10 +492,10 @@ def board():
                 score_surface = font.render(str(result['score']), True, black)
                 txt_surface = font.render(result['username'], True, black)
 
-                screen.blit(name_inform_surface, (width * 0.3, height * 0.30))
-                screen.blit(score_inform_surface, (width * 0.5, height * 0.30))
-                screen.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
-                screen.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
+                screen_board.blit(name_inform_surface, (width * 0.3, height * 0.30))
+                screen_board.blit(score_inform_surface, (width * 0.5, height * 0.30))
+                screen_board.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
+                screen_board.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -503,17 +504,15 @@ def board():
                     if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                         gameQuit = True
                         introscreen()
-
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    gameQuit = True
-                    introscreen()
-
+                    if event.button == 4: scroll_y = min(scroll_y + 15, 0)
+                    if event.button == 5: scroll_y = max(scroll_y - 15, -resized_screen.get_height())
                 if event.type == pygame.VIDEORESIZE:
                     checkscrsize(event.w, event.h)
 
+            screen.blit(screen_board, (0, scroll_y))
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
-
             pygame.display.update()
         clock.tick(FPS)
 
@@ -592,6 +591,7 @@ def typescore():
     done = False
     active = True
 
+    
     message_pos = (width*0.2, height*0.5)
     inputbox_pos = (width*0.5, height*0.5)
     typebox_size = 100
@@ -610,7 +610,6 @@ def typescore():
                 done = True
                 # if len(text)==letternum_restriction:
                 #     done = True
-
             if event.type == pygame.KEYDOWN:
                 #if active:
                 if event.key == pygame.K_RETURN:
