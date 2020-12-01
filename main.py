@@ -24,18 +24,18 @@ def introscreen():
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
     logo, logo_rect = load_image('logo.png', 180, 30, -1)
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
-    init_btn_image, init_btn_rect = load_image('replay_button.png', 35, 31, -1)
-    #BUTTON IMG LOAD
-
     Background_rect.left = width*0
     Background_rect.bottom = height
    
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
-    btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 40, 40, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 40, 40, -1)
-    r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 40*rwidth//width, 40*rwidth//width, -1)
-    
+    #init_btn&bgm_btn
+    btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 60, 60, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 60, 60, -1)
+    r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 60*rwidth//width, 60*rheight//height, -1)
+    init_btn_image, init_btn_rect = load_image('scorereset.png', 60, 60, -1)
+    r_init_btn_image, r_init_btn_rect = load_image('scorereset.png', 60*rwidth//width, 60*rheight//height, -1)
+
     ###IMGPOS###
     #BACKGROUND IMG POS
     temp_ground_rect.left = width / 20
@@ -94,7 +94,8 @@ def introscreen():
                             if on_pushtime-off_pushtime>btnpush_interval:
                                 bgm_on=True
 
-                        if init_btn_rect.collidepoint(x, y):
+                        if r_init_btn_rect.collidepoint(x, y):
+                            print('sc')
                             db.query_db("delete from user;")
                             db.commit()
 
@@ -587,14 +588,17 @@ def pausing():
 def typescore():
     global resized_screen
     global gamername
+    global width, height
     done = False
     active = True
 
-    message_pos = (80,50)
+    message_pos = (width*0.2, height*0.5)
+    inputbox_pos = (width*0.5, height*0.5)
     typebox_size = 100
     letternum_restriction=3
-    screen = pygame.display.set_mode(scr_size)
     input_box = pygame.Rect(250, 100, 300, 40)
+    input_box.centerx=inputbox_pos[0]
+    input_box.centery=inputbox_pos[1]
     color = pygame.Color('dodgerblue2')
 
     text = ''
@@ -625,7 +629,7 @@ def typescore():
         screen.fill(white)
         txt_surface = font.render(text.upper(), True, color)
         input_box.w = typebox_size
-        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+        screen.blit(txt_surface, (input_box.centerx, input_box.y+5))
         screen.blit(text2,message_pos)
         pygame.draw.rect(screen, color, input_box, 2)
         resized_screen.blit(
