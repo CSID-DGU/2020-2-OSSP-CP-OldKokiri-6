@@ -669,6 +669,7 @@ def credit():
     quit()
 
 def main():
+    db.init_db()
     isGameQuit = introscreen()
     if not isGameQuit:
         introscreen()
