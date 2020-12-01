@@ -46,9 +46,9 @@ def introscreen():
     Background_rect.bottom = height
     #BUTTONPOS
     btn_bgm_on_rect.centerx = width*0.3
-    btn_bgm_on_rect.centery = height * (0.33+2*between_btn)
+    btn_bgm_on_rect.centery = height * (0.33+2*button_offset)
     init_btn_rect.centerx = width * 0.4
-    init_btn_rect.centery = height * (0.33+2*between_btn)
+    init_btn_rect.centery = height * (0.33+2*button_offset)
 
     while not gameStart:
         if pygame.display.get_surface() == None:
@@ -58,18 +58,6 @@ def introscreen():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return True
-                '''
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                        temp_dino.isJumping = True
-                        temp_dino.isBlinking = False
-                        temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    temp_dino.isJumping = True
-                    temp_dino.isBlinking = False
-                    temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
-                '''
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed() == (1, 0, 0):
                         x, y = event.pos
@@ -82,8 +70,7 @@ def introscreen():
                             board()
 
                         if r_btn_credit_rect.collidepoint(x, y):
-                            typescore()
-                            #credit
+                            credit()
 
                         if r_btn_bgm_on_rect.collidepoint(x, y) and bgm_on:
                             off_pushtime = pygame.time.get_ticks()
@@ -96,7 +83,6 @@ def introscreen():
                                 bgm_on=True
 
                         if r_init_btn_rect.collidepoint(x, y):
-                            print('sc')
                             db.query_db("delete from user;")
                             db.commit()
 
@@ -109,7 +95,8 @@ def introscreen():
             screen.fill(background_col)
             screen.blit(temp_ground[0], temp_ground_rect)
             r_btn_gamestart_rect.centerx, r_btn_board_rect.centerx, r_btn_credit_rect.centerx = resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72
-            r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = resized_screen.get_height() * 0.33, resized_screen.get_height() * (0.33+between_btn), resized_screen.get_height() * (0.33+2*between_btn)
+            r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = resized_screen.get_height() * 0.33, resized_screen.get_height() * (0.33+button_offset), resized_screen.get_height() * (0.33+2*button_offset)
+            r_init_btn_rect.centerx, r_init_btn_rect.centery = resized_screen.get_width() * 0.4, r_btn_credit_rect.centery
             screen.blit(Background, Background_rect)
             disp_intro_buttons(btn_gamestart, btn_board, btn_credit)
             screen.blit(init_btn_image, init_btn_rect)
@@ -480,24 +467,19 @@ def board():
     results = db.query_db("select username, score from user order by score desc;")
 
     while not gameQuit:
-
         if pygame.display.get_surface() is None:
             gameQuit = True
-
         else:
             screen_board.fill(background_col)
-
             for i, result in enumerate(results):
                 name_inform_surface = font.render("Name", True, black)
                 score_inform_surface = font.render("Score", True, black)
                 score_surface = font.render(str(result['score']), True, black)
                 txt_surface = font.render(result['username'], True, black)
-
                 screen_board.blit(name_inform_surface, (width * 0.3, height * 0.30))
                 screen_board.blit(score_inform_surface, (width * 0.5, height * 0.30))
                 screen_board.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
                 screen_board.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     gameQuit = True

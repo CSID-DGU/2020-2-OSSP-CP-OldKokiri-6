@@ -24,7 +24,7 @@ screen = resized_screen.copy()
 resized_screen_centerpos = (0,0)
 rwidth = resized_screen.get_width()
 rheight = resized_screen.get_height()
-between_btn = 0.25
+button_offset = 0.25
 
 clock = pygame.time.Clock()
 pygame.display.set_caption("T-Rex Rush by_OldKokiri")
@@ -126,7 +126,7 @@ def disp_intro_buttons(btn_gamestart,btn_board,btn_credit):
     btn_credit_rect = btn_credit.get_rect()
 
     btn_gamestart_rect.centerx, btn_board_rect.centerx, btn_credit_rect.centerx = width * 0.72, width * 0.72, width * 0.72
-    btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+between_btn), height * (0.33+2*between_btn)
+    btn_gamestart_rect.centery, btn_board_rect.centery, btn_credit_rect.centery = height * 0.33, height * (0.33+button_offset), height * (0.33+2*button_offset)
     
     screen.blit(btn_gamestart, btn_gamestart_rect)
     screen.blit(btn_board, btn_board_rect)
