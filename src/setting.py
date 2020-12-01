@@ -103,7 +103,8 @@ def load_sprite_sheet(
 
     sprite_rect = sprites[0].get_rect()
 
-    return sprites,sprite_rect
+    return sprites, sprite_rect
+
 
 def disp_gameOver_msg(retbutton_image,gameover_image):
     retbutton_rect = retbutton_image.get_rect()
@@ -116,6 +117,7 @@ def disp_gameOver_msg(retbutton_image,gameover_image):
 
     screen.blit(retbutton_image, retbutton_rect)
     screen.blit(gameover_image, gameover_rect)
+
 
 def disp_intro_buttons(btn_gamestart,btn_board,btn_credit):
     btn_gamestart_rect = btn_gamestart.get_rect()
@@ -132,7 +134,6 @@ def disp_intro_buttons(btn_gamestart,btn_board,btn_credit):
 # def imgresizer(img, rect):
     
 
-
 def checkscrsize(eventw, eventh):
     if (eventw < width and eventh < height) or eventw < width or eventh < height: #최소해상도
         resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
@@ -140,6 +141,7 @@ def checkscrsize(eventw, eventh):
         if eventw/eventh!=width/height: #고정화면비
             adjusted_height=int(eventw/(width/height))
             resized_screen = pygame.display.set_mode((eventw,adjusted_height), RESIZABLE)
+
 
 def extractDigits(number):
     if number > -1:
