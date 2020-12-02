@@ -18,23 +18,23 @@ def introscreen():
     temp_dino.isBlinking = True
     gameStart = False
     btnpush_interval = 500 #ms
-
+    
     ###IMGLOAD###
     #BACKGROUND IMG LOAD
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
     logo, logo_rect = load_image('logo.png', 180, 30, -1)
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
-    init_btn_image, init_btn_rect = load_image('replay_button.png', 35, 31, -1)
-    #BUTTON IMG LOAD
-
     Background_rect.left = width*0
     Background_rect.bottom = height
-
+   
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
-    btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 40, 40, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 40, 40, -1)
-    r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 40*rwidth//width, 40*rwidth//width, -1)
+    #init_btn&bgm_btn
+    btn_bgm_on, btn_bgm_on_rect = load_image('btn_bgm_on.png', 60, 60, -1) ; btn_bgm_off, btn_bgm_off_rect = load_image('btn_bgm_off.png', 60, 60, -1)
+    r_btn_bgm_on, r_btn_bgm_on_rect = load_image('btn_bgm_on.png', 60*rwidth//width, 60*rheight//height, -1)
+    init_btn_image, init_btn_rect = load_image('scorereset.png', 60, 60, -1)
+    r_init_btn_image, r_init_btn_rect = load_image('scorereset.png', 60*rwidth//width, 60*rheight//height, -1)
 
     ###IMGPOS###
     #BACKGROUND IMG POS
@@ -46,9 +46,9 @@ def introscreen():
     Background_rect.bottom = height
     #BUTTONPOS
     btn_bgm_on_rect.centerx = width*0.3
-    btn_bgm_on_rect.centery = height * (0.33+2*between_btn)
+    btn_bgm_on_rect.centery = height * (0.33+2*button_offset)
     init_btn_rect.centerx = width * 0.4
-    init_btn_rect.centery = height * (0.33+2*between_btn)
+    init_btn_rect.centery = height * (0.33+2*button_offset)
 
     while not gameStart:
         if pygame.display.get_surface() == None:
@@ -58,18 +58,6 @@ def introscreen():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return True
-                '''
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                        temp_dino.isJumping = True
-                        temp_dino.isBlinking = False
-                        temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    temp_dino.isJumping = True
-                    temp_dino.isBlinking = False
-                    temp_dino.movement[1] = -1 * temp_dino.jumpSpeed
-                '''
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if pygame.mouse.get_pressed() == (1, 0, 0):
                         x, y = event.pos
@@ -94,7 +82,7 @@ def introscreen():
                             if on_pushtime-off_pushtime>btnpush_interval:
                                 bgm_on=True
 
-                        if init_btn_rect.collidepoint(x, y):
+                        if r_init_btn_rect.collidepoint(x, y):
                             db.query_db("delete from user;")
                             db.commit()
 
@@ -107,7 +95,8 @@ def introscreen():
             screen.fill(background_col)
             screen.blit(temp_ground[0], temp_ground_rect)
             r_btn_gamestart_rect.centerx, r_btn_board_rect.centerx, r_btn_credit_rect.centerx = resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72, resized_screen.get_width() * 0.72
-            r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = resized_screen.get_height() * 0.33, resized_screen.get_height() * (0.33+between_btn), resized_screen.get_height() * (0.33+2*between_btn)
+            r_btn_gamestart_rect.centery, r_btn_board_rect.centery, r_btn_credit_rect.centery = resized_screen.get_height() * 0.33, resized_screen.get_height() * (0.33+button_offset), resized_screen.get_height() * (0.33+2*button_offset)
+            r_init_btn_rect.centerx, r_init_btn_rect.centery = resized_screen.get_width() * 0.4, r_btn_credit_rect.centery
             screen.blit(Background, Background_rect)
             disp_intro_buttons(btn_gamestart, btn_board, btn_credit)
             screen.blit(init_btn_image, init_btn_rect)
@@ -154,7 +143,7 @@ def gameplay():
     heart = HeartIndicator(life)
     speed_indicator = Scoreboard(width * 0.12, height * 0.15)
     counter = 0
-
+    
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
@@ -411,7 +400,7 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
-
+                        
                 if counter % speed_up_limit_count == speed_up_limit_count - 1:
                     new_ground.speed -= 1
                     gamespeed += 1
@@ -439,7 +428,7 @@ def gameplay():
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
                             gameQuit = True
-                            typescore()
+                            typescore(playerDino.score)
                             db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                             db.commit()
                             board()
@@ -447,7 +436,7 @@ def gameplay():
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
-                        typescore()
+                        typescore(playerDino.score)
                         db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                         db.commit()
                         board()
@@ -472,29 +461,25 @@ def gameplay():
 
 def board():
     global resized_screen
+    screen_board = pygame.surface.Surface((resized_screen.get_width(), resized_screen.get_height()*2))
     gameQuit = False
-
+    scroll_y=0
     results = db.query_db("select username, score from user order by score desc;")
 
     while not gameQuit:
-
         if pygame.display.get_surface() is None:
             gameQuit = True
-
         else:
-            screen.fill(background_col)
-
+            screen_board.fill(background_col)
             for i, result in enumerate(results):
                 name_inform_surface = font.render("Name", True, black)
                 score_inform_surface = font.render("Score", True, black)
                 score_surface = font.render(str(result['score']), True, black)
                 txt_surface = font.render(result['username'], True, black)
-
-                screen.blit(name_inform_surface, (width * 0.3, height * 0.30))
-                screen.blit(score_inform_surface, (width * 0.5, height * 0.30))
-                screen.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
-                screen.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
-
+                screen_board.blit(name_inform_surface, (width * 0.3, height * 0.30))
+                screen_board.blit(score_inform_surface, (width * 0.5, height * 0.30))
+                screen_board.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
+                screen_board.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     gameQuit = True
@@ -502,17 +487,18 @@ def board():
                     if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                         gameQuit = True
                         introscreen()
-
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    gameQuit = True
-                    introscreen()
-
+                    if event.button == 4: scroll_y = min(scroll_y + 15, 0)
+                    if event.button == 5: scroll_y = max(scroll_y - 15, -resized_screen.get_height())
+                    if event.button == 1:
+                        gameQuit = True
+                        introscreen()
                 if event.type == pygame.VIDEORESIZE:
                     checkscrsize(event.w, event.h)
 
+            screen.blit(screen_board, (0, scroll_y))
             resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
-
             pygame.display.update()
         clock.tick(FPS)
 
@@ -584,21 +570,24 @@ def pausing():
     pygame.quit()
     quit()
 
-def typescore():
+def typescore(score):
     global resized_screen
     global gamername
+    global width, height
     done = False
     active = True
 
-    message_pos = (80,50)
+    message_pos = (width*0.25, height*0.3)
+    score_pos = (width*0.35, height*0.4)
+    inputbox_pos = (width*0.43, height*0.5)
     typebox_size = 100
     letternum_restriction=3
-    screen = pygame.display.set_mode(scr_size)
-    input_box = pygame.Rect(250, 100, 300, 40)
+    input_box = pygame.Rect(inputbox_pos[0], inputbox_pos[1], 500, 50)
     color = pygame.Color('dodgerblue2')
 
     text = ''
     text2 = font.render("플레이어 이름을 입력해주세요", True, (28,0,0))
+    text3 = font.render(f"CURRENT SCORE: {score}", True, black)
 
     while not done:
         for event in pygame.event.get():
@@ -606,7 +595,6 @@ def typescore():
                 done = True
                 # if len(text)==letternum_restriction:
                 #     done = True
-
             if event.type == pygame.KEYDOWN:
                 #if active:
                 if event.key == pygame.K_RETURN:
@@ -623,10 +611,11 @@ def typescore():
                 checkscrsize(event.w, event.h)
 
         screen.fill(white)
-        txt_surface = font.render(text.upper(), True, color)
+        txt_surface = typescore_font.render(text.upper(), True, color)
         input_box.w = typebox_size
-        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
-        screen.blit(text2,message_pos)
+        screen.blit(txt_surface, (input_box.centerx-len(text)*11-5, input_box.y))
+        screen.blit(text2, message_pos)
+        screen.blit(text3, score_pos)
         pygame.draw.rect(screen, color, input_box, 2)
         resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
@@ -650,6 +639,8 @@ def credit():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                return False
             if event.type == pygame.VIDEORESIZE:
                 checkscrsize(event.w, event.h)
         screen.fill(white)
