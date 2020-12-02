@@ -1,9 +1,4 @@
 ![No longer maintained](https://img.shields.io/badge/Maintenance-OFF-red.svg)
-### [DEPRECATED] This repository is no longer maintained
-> While this project is fully functional, I won't be able to accept any new pull requests or features. You are still welcome to explore, learn, and use the code provided here.
->
-> Feel free to fork this project and use it as your own, and do let me know via email (mentioned below) if you develop something new and innovative using this repository. Cheers! :)
-> ~Shivam
 
 # T-Rex Rush 
 
@@ -12,13 +7,15 @@
 ![](https://github.com/shivamshekhar/Chrome-T-Rex-Rush/raw/master/screenshot.gif)
 
 ### Description:
-A recreated version of the famous Chrome T-Rex in Python 
+A recreated version of the famous Chrome T-Rex in Python  
+"Shivam Shekhar" created game, "Old-Kokiri" enhanced game
 
 ### Technology:
 Built using pygame library
 
 ### Version and Release:
-First Release, version 1.0
+* original author: Shivam Shekhar
+* First enhancement, version 2.0
 
 ### Target Platforms:
 Windows/Linux
@@ -29,13 +26,16 @@ To run this game:
 * Run main.py
 
 ##### Controls:
-* Press UP or SPACE to make T-Rex jump over the obstacles
-* Press DOWN key to crouch
+* Press UP or SPACE or LEFT MOUSE BUTTON to make T-Rex jump over the obstacles
+* Press DOWN or RIGHT MOUSE BUTTON key to crouch
 * Avoid getting hit by obstacles. 
 
 ### Developed by: 
-Shivam Shekhar  
-Email: shivamshekhar299@gmail.com   
+CSID-DGU-"Old Kokiri"  
+* kimbk209:  
+* good-riverdeer: rornf6232@gmail.com  
+* kiho7248:  
+* epsltm09:  
 
 #### Credits:
 * Sprites : https://chromedino.com/assets/offline-sprite-2x-black.png
@@ -46,3 +46,4 @@ Email: shivamshekhar299@gmail.com
 #### References:
 * http://www.pygame.org/docs
 * https://github.com/wayou/t-rex-runner
+* https://github.com/shivamshekhar/Chrome-T-Rex-Rush

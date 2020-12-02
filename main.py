@@ -21,8 +21,8 @@ def introscreen():
     
     ###IMGLOAD###
     #BACKGROUND IMG LOAD
-    temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
-    logo, logo_rect = load_image('logo.png', 180, 30, -1)
+    temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 10, 1, -1, -1, -1)
+    logo, logo_rect = load_image('logo.png', 360, 60, -1)
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
@@ -164,18 +164,18 @@ def gameplay():
     HighJumpItem.containers = highjump_items
 
     #BUTTON IMG LOAD
-    retbutton_image, retbutton_rect = load_image('replay_button.png', 35, 31, -1)
-    gameover_image, gameover_rect = load_image('game_over.png', 190, 11, -1)
+    retbutton_image, retbutton_rect = load_image('replay_button.png', 70, 62, -1)
+    gameover_image, gameover_rect = load_image('game_over.png', 380, 22, -1)
 
-    temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(15 * 6 / 5), -1)
-    HI_image = pygame.Surface((30, int(15 * 6 / 5)))
-    HI_rect = HI_image.get_rect()
-    HI_image.fill(background_col)
-    HI_image.blit(temp_images[10], temp_rect)
-    temp_rect.left += temp_rect.width
-    HI_image.blit(temp_images[11], temp_rect)
-    HI_rect.top = height * 0.05
-    HI_rect.left = width * 0.73
+    # temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(15 * 6 / 5), -1)
+    # HI_image = pygame.Surface((30, int(15 * 6 / 5)))
+    # HI_rect = HI_image.get_rect()
+    # HI_image.fill(background_col)
+    # HI_image.blit(temp_images[10], temp_rect)
+    # temp_rect.left += temp_rect.width
+    # HI_image.blit(temp_images[11], temp_rect)
+    # HI_rect.top = height * 0.05
+    # HI_rect.left = width * 0.73
 
     while not gameQuit:
         while startMenu:
@@ -444,12 +444,12 @@ def gameplay():
                     if event.type == pygame.VIDEORESIZE:
                         checkscrsize(event.w, event.h)
 
-            highsc.update(high_score)
+            # highsc.update(high_score)
             if pygame.display.get_surface() != None:
                 disp_gameOver_msg(retbutton_image, gameover_image)
-                if high_score != 0:
-                    highsc.draw()
-                    screen.blit(HI_image, HI_rect)
+                # if high_score != 0:
+                #     highsc.draw()
+                #     screen.blit(HI_image, HI_rect)
                 resized_screen.blit(
                     pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
                 pygame.display.update()
@@ -466,11 +466,16 @@ def board():
     scroll_y=0
     results = db.query_db("select username, score from user order by score desc;")
 
+    title_image, title_rect = load_image("ranking.png", 360, 75, -1)
+    title_rect.centerx = width * 0.5
+    title_rect.centery = height * 0.2
+
     while not gameQuit:
         if pygame.display.get_surface() is None:
             gameQuit = True
         else:
             screen_board.fill(background_col)
+            screen_board.blit(title_image, title_rect)
             for i, result in enumerate(results):
                 name_inform_surface = font.render("Name", True, black)
                 score_inform_surface = font.render("Score", True, black)
@@ -509,18 +514,18 @@ def board():
 def pausing():
     global resized_screen
     gameQuit = False
-    pause_pic, pause_pic_rect = load_image('pause_pic.png', 240, 50, -1)
+    pause_pic, pause_pic_rect = load_image('paused.png', 360, 75, -1)
     pause_pic_rect.centerx = width * 0.5
     pause_pic_rect.centery = height * 0.2
 
     pygame.mixer.music.pause() # 일시정지상태가 되면 배경음악도 일시정지
 
     #BUTTON IMG LOAD
-    retbutton_image, retbutton_rect = load_image('main_button.png', 35, 31, -1)
-    resume_image, resume_rect = load_image('continue_button.png', 35, 31, -1)
+    retbutton_image, retbutton_rect = load_image('main_button.png', 70, 62, -1)
+    resume_image, resume_rect = load_image('continue_button.png', 70, 62, -1)
 
-    resized_retbutton_image, resized_retbutton_rect = load_image('main_button.png', 35*resized_screen.get_width()//width, 31*resized_screen.get_height()//height, -1)
-    resized_resume_image, resized_resume_rect = load_image('continue_button.png', 35*resized_screen.get_width()//width, 31*resized_screen.get_height()//height, -1)
+    resized_retbutton_image, resized_retbutton_rect = load_image('main_button.png', 70*resized_screen.get_width()//width, 62*resized_screen.get_height()//height, -1)
+    resized_resume_image, resized_resume_rect = load_image('continue_button.png', 70*resized_screen.get_width()//width, 62*resized_screen.get_height()//height, -1)
 
     #BUTTONPOS
     retbutton_rect.centerx = width * 0.4 ; retbutton_rect.top = height * 0.52
