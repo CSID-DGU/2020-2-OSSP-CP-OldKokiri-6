@@ -428,7 +428,7 @@ def gameplay():
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                             gameOver = False
                             gameQuit = True
-                            typescore()
+                            typescore(playerDino.score)
                             db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                             db.commit()
                             board()
@@ -436,7 +436,7 @@ def gameplay():
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
-                        typescore()
+                        typescore(playerDino.score)
                         db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
                         db.commit()
                         board()
@@ -570,15 +570,15 @@ def pausing():
     pygame.quit()
     quit()
 
-def typescore():
+def typescore(score):
     global resized_screen
     global gamername
     global width, height
     done = False
     active = True
 
-    
     message_pos = (width*0.25, height*0.3)
+    score_pos = (width*0.35, height*0.4)
     inputbox_pos = (width*0.43, height*0.5)
     typebox_size = 100
     letternum_restriction=3
@@ -587,6 +587,7 @@ def typescore():
 
     text = ''
     text2 = font.render("플레이어 이름을 입력해주세요", True, (28,0,0))
+    text3 = font.render(f"CURRENT SCORE: {score}", True, black)
 
     while not done:
         for event in pygame.event.get():
@@ -613,7 +614,8 @@ def typescore():
         txt_surface = typescore_font.render(text.upper(), True, color)
         input_box.w = typebox_size
         screen.blit(txt_surface, (input_box.centerx-len(text)*11-5, input_box.y))
-        screen.blit(text2,message_pos)
+        screen.blit(text2, message_pos)
+        screen.blit(text3, score_pos)
         pygame.draw.rect(screen, color, input_box, 2)
         resized_screen.blit(
                 pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())),
