@@ -2,13 +2,9 @@ __author__ = "Shivam Shekhar"
 made_by = "OldKokiri-6"
 
 from src.dino import *
-from src.cactus import *
-from src.ptera import *
-from src.ground import *
-from src.cloud import *
-from src.scoreboard import *
+from src.obstacle import *
 from src.item import *
-from src.heart import *
+from src.interface import *
 import db.db_interface as dbi
 
 db = dbi.InterfDB("db/score.db")
@@ -669,6 +665,7 @@ def credit():
     quit()
 
 def main():
+    db.init_db()
     isGameQuit = introscreen()
     if not isGameQuit:
         introscreen()
