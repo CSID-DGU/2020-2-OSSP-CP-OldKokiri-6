@@ -1,6 +1,6 @@
 ![No longer maintained](https://img.shields.io/badge/Maintenance-OFF-red.svg)
 
-# T-Rex Rush 
+# T-Rex Rush ( CSID_DGU_OSSP )
 
 ![introscreen](https://user-images.githubusercontent.com/67779236/100957029-1b3ac880-355d-11eb-82d3-b72857b1c0bd.png)
 
