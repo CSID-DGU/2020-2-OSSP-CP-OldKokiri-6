@@ -32,13 +32,13 @@ To run this game:
 
 ### Developed by: 
 CSID-DGU-"Old Kokiri"  
-* kimbk209:  
-* good-riverdeer: rornf6232@gmail.com  
-* kiho7248:  
-* epsltm09:  
+* kimbk209
+* good-riverdeer
+* kiho7248
+* epsltm09
 
 #### Credits:
-* Sprites : https://chromedino.com/assets/offline-sprite-2x-black.png
+* Sprites : https://chromedino.com/assets/offline-sprite-2x-black.png or WE MADE
 * Logo : https://textcraft.net/
 * Speech Bubble : http://pixelspeechbubble.com/
 * Sounds : https://github.com/vicboma1/T-Rex-Game/tree/master/Unity/Sounds
@@ -47,3 +47,25 @@ CSID-DGU-"Old Kokiri"
 * http://www.pygame.org/docs
 * https://github.com/wayou/t-rex-runner
 * https://github.com/shivamshekhar/Chrome-T-Rex-Rush
+
+### Enhancements:
+
+#### Add "LIFE" of T-Rex:
+Heart Shapes means T-Rex's LIFE
+
+#### Add Several items:
+* Heart items give T-Rex LIFE
+* Star items make T-Rex stronger
+* Hourglass items make T-Rex run slow
+* Spring items make T-Rex jump HIGH
+
+#### Add "SPEED":
+Players can check the SPEED of T-Rex
+
+#### Add Score board:
+* We maintain Players scores in a database 
+* `~/db/score.db` stores the scores
+* Players can check Scores in "Score board"
+
+#### Pause:
+Press ESCAPE key to pause the game
