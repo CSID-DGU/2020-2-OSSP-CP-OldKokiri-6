@@ -85,6 +85,8 @@ def introscreen():
                         if r_init_btn_rect.collidepoint(x, y):
                             db.query_db("delete from user;")
                             db.commit()
+                            global high_score
+                            high_score = 0
 
                 if event.type == pygame.VIDEORESIZE:
                     checkscrsize(event.w, event.h)
@@ -126,6 +128,9 @@ def introscreen():
 def gameplay():
     global resized_screen
     global high_score
+    result = db.query_db("select score from user order by score desc;", one=True)
+    if result is not None:
+        high_score = result['score']
     if bgm_on:
         pygame.mixer.music.play(-1) # 배경음악 실행
     gamespeed = 4
@@ -167,15 +172,15 @@ def gameplay():
     retbutton_image, retbutton_rect = load_image('replay_button.png', 70, 62, -1)
     gameover_image, gameover_rect = load_image('game_over.png', 380, 22, -1)
 
-    # temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(15 * 6 / 5), -1)
-    # HI_image = pygame.Surface((30, int(15 * 6 / 5)))
-    # HI_rect = HI_image.get_rect()
-    # HI_image.fill(background_col)
-    # HI_image.blit(temp_images[10], temp_rect)
-    # temp_rect.left += temp_rect.width
-    # HI_image.blit(temp_images[11], temp_rect)
-    # HI_rect.top = height * 0.05
-    # HI_rect.left = width * 0.73
+    temp_images, temp_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(15 * 6 / 5), -1)
+    HI_image = pygame.Surface((30, int(15 * 6 / 5)))
+    HI_rect = HI_image.get_rect()
+    HI_image.fill(background_col)
+    HI_image.blit(temp_images[10], temp_rect)
+    temp_rect.left += temp_rect.width
+    HI_image.blit(temp_images[11], temp_rect)
+    HI_rect.top = height * 0.05
+    HI_rect.left = width * 0.73
 
     while not gameQuit:
         while startMenu:
@@ -314,6 +319,8 @@ def gameplay():
                             jump_sound.play()
                         playerDino.isJumping = True
                         playerDino.movement[1] = -1 * playerDino.superJumpSpeed
+                    if h.rect.right < 0:
+                        h.kill()
 
                 if len(cacti) < 2:
                     if len(cacti) == 0:
@@ -325,7 +332,7 @@ def gameplay():
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
-                if len(pteras) == 0 and random.randrange(0, 100) == 10 and counter > 300:
+                if len(pteras) == 0 and random.randrange(0, 300) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
@@ -334,25 +341,25 @@ def gameplay():
                 if len(clouds) < 5 and random.randrange(0, 300) == 10:
                     Cloud(width, random.randrange(height / 5, height / 2))
 
-                if len(shield_items) == 0 and random.randrange(0, 200) == 10 and counter > 300:
+                if len(shield_items) == 0 and random.randrange(0, 500) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(ShieldItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(life_items) == 0 and random.randrange(0, 300) == 10 and counter > 1000:
+                if len(life_items) == 0 and random.randrange(0, 1000) == 10 and counter > 2000:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(slow_items) == 0 and random.randrange(0, 500) == 10 and counter > 1000:
+                if len(slow_items) == 0 and random.randrange(0, 1000) == 10 and counter > 1000:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
                             last_obstacle.add(SlowItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(highjump_items) == 0 and random.randrange(0, 100) == 10 and counter > 300:
+                if len(highjump_items) == 0 and random.randrange(0, 300) == 100 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
@@ -444,12 +451,12 @@ def gameplay():
                     if event.type == pygame.VIDEORESIZE:
                         checkscrsize(event.w, event.h)
 
-            # highsc.update(high_score)
+            highsc.update(high_score)
             if pygame.display.get_surface() != None:
                 disp_gameOver_msg(retbutton_image, gameover_image)
-                # if high_score != 0:
-                #     highsc.draw()
-                #     screen.blit(HI_image, HI_rect)
+                if high_score != 0:
+                    highsc.draw()
+                    screen.blit(HI_image, HI_rect)
                 resized_screen.blit(
                     pygame.transform.scale(screen, (resized_screen.get_width(), resized_screen.get_height())), resized_screen_centerpos)
                 pygame.display.update()
