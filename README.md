@@ -2,9 +2,11 @@
 
 # T-Rex Rush 
 
-![](https://github.com/shivamshekhar/Chrome-T-Rex-Rush/raw/master/screenshot.png)
+![introscreen](https://user-images.githubusercontent.com/67779236/100957029-1b3ac880-355d-11eb-82d3-b72857b1c0bd.png)
 
-![](https://github.com/shivamshekhar/Chrome-T-Rex-Rush/raw/master/screenshot.gif)
+![gameplay_1](https://user-images.githubusercontent.com/67779236/100957522-f85ce400-355d-11eb-8b54-2760805b9dd8.PNG)
+
+![gameplay_2](https://user-images.githubusercontent.com/67779236/100957540-014db580-355e-11eb-8fc9-594b3c230bba.PNG)
 
 ### Description:
 A recreated version of the famous Chrome T-Rex in Python  
