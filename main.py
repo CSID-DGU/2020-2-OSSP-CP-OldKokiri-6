@@ -18,7 +18,7 @@ def introscreen():
     temp_dino.isBlinking = True
     gameStart = False
     btnpush_interval = 500 #ms
-    
+
     ###IMGLOAD###
     #BACKGROUND IMG LOAD
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
@@ -26,7 +26,7 @@ def introscreen():
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
-   
+
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
@@ -143,7 +143,7 @@ def gameplay():
     heart = HeartIndicator(life)
     speed_indicator = Scoreboard(width * 0.12, height * 0.15)
     counter = 0
-    
+
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
@@ -400,7 +400,7 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
-                        
+
                 if counter % speed_up_limit_count == speed_up_limit_count - 1:
                     new_ground.speed -= 1
                     gamespeed += 1
