@@ -152,6 +152,7 @@ def gameplay():
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
+    fire_cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
@@ -161,6 +162,7 @@ def gameplay():
     highjump_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
+    fire_Cactus.containers = fire_cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
@@ -253,6 +255,26 @@ def gameplay():
                         if immune_time - collision_time > collision_immune_time:
                             playerDino.collision_immune = False
 
+                for f in fire_cacti:
+                    f.movement[0] = -1 * gamespeed
+                    if not playerDino.collision_immune:
+                        if pygame.sprite.collide_mask(playerDino, f):
+                            playerDino.collision_immune = True
+                            life -= 1
+                            collision_time = pygame.time.get_ticks()
+                            if life == 0:
+                                playerDino.isDead = True
+                            if pygame.mixer.get_init() is not None:
+                                die_sound.play()
+
+                    elif not playerDino.isSuper:
+                        immune_time = pygame.time.get_ticks()
+                        if immune_time - collision_time > collision_immune_time:
+                            playerDino.collision_immune = False
+
+
+
+
                 for p in pteras:
                     p.movement[0] = -1 * gamespeed
                     if not playerDino.collision_immune:
@@ -332,6 +354,16 @@ def gameplay():
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
+                if len(fire_cacti) < 2:
+                    if len(fire_cacti) == 0.5:
+                        last_obstacle.empty()
+                        last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
+                    else:
+                        for l in last_obstacle:
+                            if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
+                                last_obstacle.empty()
+                                last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
+
                 if len(pteras) == 0 and random.randrange(0, 300) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
@@ -367,6 +399,7 @@ def gameplay():
 
                 playerDino.update()
                 cacti.update()
+                fire_cacti.update()
                 pteras.update()
                 clouds.update()
                 shield_items.update()
@@ -391,6 +424,7 @@ def gameplay():
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
+                    fire_cacti.draw(screen)
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
