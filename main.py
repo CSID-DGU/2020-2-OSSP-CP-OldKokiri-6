@@ -152,6 +152,7 @@ def gameplay():
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
+    # big_cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
@@ -161,6 +162,7 @@ def gameplay():
     highjump_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
+    # Cactus.containers = big_cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
@@ -331,6 +333,9 @@ def gameplay():
                             if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
+                            # elif l.rect.right < width * 0.7 and random.randrange(0, 500) == 10:
+                            #     last_obstacle.empty()
+                            #     last_obstacle.add(Cactus(gamespeed, object_size[0]*2, object_size[1]*2))
 
                 if len(pteras) == 0 and random.randrange(0, 300) == 10 and counter > 300:
                     for l in last_obstacle:
@@ -365,8 +370,15 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(HighJumpItem(gamespeed, object_size[0], int(object_size[1] / 2)))
 
+                # if len(highjump_items) == 1:
+                #     for l in last_obstacle:
+                #         if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(Cactus(gamespeed, 2*object_size[0], 2*object_size[1]))
+
                 playerDino.update()
                 cacti.update()
+                # big_cacti.update()
                 pteras.update()
                 clouds.update()
                 shield_items.update()
@@ -391,6 +403,7 @@ def gameplay():
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
+                    # big_cacti.draw(screen)
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
