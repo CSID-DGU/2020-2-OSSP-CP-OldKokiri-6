@@ -316,7 +316,7 @@ def gameplay():
 
                 for h in highjump_items:
                     h.movement[0] = -1 * gamespeed
-                    if pygame.sprite.collide_mask(playerDino, h):
+                    if pygame.sprite.collide_mask(playerDino, h) and playerDino.rect.bottom != int(height * 0.98):
                         if pygame.mixer.get_init() is not None:
                             jump_sound.play()
                         playerDino.isJumping = True
@@ -333,9 +333,6 @@ def gameplay():
                             if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
-                            # elif l.rect.right < width * 0.7 and random.randrange(0, 500) == 10:
-                            #     last_obstacle.empty()
-                            #     last_obstacle.add(Cactus(gamespeed, object_size[0]*2, object_size[1]*2))
 
                 if len(pteras) == 0 and random.randrange(0, 300) == 10 and counter > 300:
                     for l in last_obstacle:
@@ -370,15 +367,11 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(HighJumpItem(gamespeed, object_size[0], int(object_size[1] / 2)))
 
-                # if len(highjump_items) == 1:
-                #     for l in last_obstacle:
-                #         if l.rect.right < width * 0.8:
                             last_obstacle.empty()
-                            last_obstacle.add(Cactus(gamespeed, 2*object_size[0], 2*object_size[1]))
+                            last_obstacle.add(Cactus(gamespeed, object_size[0]*2, int(object_size[1]*1.5)))
 
                 playerDino.update()
                 cacti.update()
-                # big_cacti.update()
                 pteras.update()
                 clouds.update()
                 shield_items.update()
@@ -403,7 +396,6 @@ def gameplay():
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
-                    # big_cacti.draw(screen)
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
