@@ -152,7 +152,6 @@ def gameplay():
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
-    # big_cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
@@ -162,7 +161,6 @@ def gameplay():
     highjump_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
-    # Cactus.containers = big_cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
