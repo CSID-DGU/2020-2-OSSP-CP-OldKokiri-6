@@ -355,14 +355,10 @@ def gameplay():
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
                 if len(fire_cacti) < 2:
-                    if len(fire_cacti) == 0.5:
-                        last_obstacle.empty()
-                        last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
-                    else:
-                        for l in last_obstacle:
-                            if l.rect.right < width * 0.7 and random.randrange(0, 250) == 10:
-                                last_obstacle.empty()
-                                last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.7 and random.randrange(0, 250) == 10:
+                            last_obstacle.empty()
+                            last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
 
                 if len(pteras) == 0 and random.randrange(0, 300) == 10 and counter > 300:
                     for l in last_obstacle:
