@@ -153,6 +153,7 @@ def gameplay():
 
     cacti = pygame.sprite.Group()
     fire_cacti = pygame.sprite.Group()
+    # big_cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
@@ -163,6 +164,7 @@ def gameplay():
 
     Cactus.containers = cacti
     fire_Cactus.containers = fire_cacti
+    # Cactus.containers = big_cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
@@ -353,6 +355,9 @@ def gameplay():
                             if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
+                            # elif l.rect.right < width * 0.7 and random.randrange(0, 500) == 10:
+                            #     last_obstacle.empty()
+                            #     last_obstacle.add(Cactus(gamespeed, object_size[0]*2, object_size[1]*2))
 
                 if len(fire_cacti) < 2:
                     for l in last_obstacle:
@@ -393,9 +398,16 @@ def gameplay():
                             last_obstacle.empty()
                             last_obstacle.add(HighJumpItem(gamespeed, object_size[0], int(object_size[1] / 2)))
 
+                # if len(highjump_items) == 1:
+                #     for l in last_obstacle:
+                #         if l.rect.right < width * 0.8:
+                            last_obstacle.empty()
+                            last_obstacle.add(Cactus(gamespeed, 2*object_size[0], 2*object_size[1]))
+
                 playerDino.update()
                 cacti.update()
                 fire_cacti.update()
+                # big_cacti.update()
                 pteras.update()
                 clouds.update()
                 shield_items.update()
@@ -421,6 +433,7 @@ def gameplay():
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
                     fire_cacti.draw(screen)
+                    # big_cacti.draw(screen)
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
