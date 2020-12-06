@@ -396,7 +396,7 @@ def gameplay():
                             last_obstacle.add(HighJumpItem(gamespeed, object_size[0], int(object_size[1] / 2)))
 
                             last_obstacle.empty()
-                            last_obstacle.add(Cactus(gamespeed, object_size[0]*2, int(object_size[1]*1.5)))
+                            last_obstacle.add(Cactus(gamespeed, int(object_size[0]*2.5), int(object_size[1]*1.5)))
 
                 playerDino.update()
                 cacti.update()
@@ -642,6 +642,7 @@ def typescore(score):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
+                introscreen()
                 # if len(text)==letternum_restriction:
                 #     done = True
             if event.type == pygame.KEYDOWN:
