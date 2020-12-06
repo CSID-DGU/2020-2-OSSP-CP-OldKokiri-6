@@ -360,7 +360,7 @@ def gameplay():
                         last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
                     else:
                         for l in last_obstacle:
-                            if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
+                            if l.rect.right < width * 0.7 and random.randrange(0, 250) == 10:
                                 last_obstacle.empty()
                                 last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
 
