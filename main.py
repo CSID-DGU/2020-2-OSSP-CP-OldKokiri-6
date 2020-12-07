@@ -518,7 +518,6 @@ def board():
     gameQuit = False
     scroll_y = 0
     results = db.query_db("select username, score from user order by score desc;")
-    results = results[:10]
 
     title_image, title_rect = load_image("ranking.png", 360, 75, -1)
     title_rect.centerx = width * 0.5
