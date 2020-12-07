@@ -153,7 +153,6 @@ def gameplay():
 
     cacti = pygame.sprite.Group()
     fire_cacti = pygame.sprite.Group()
-    # big_cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
@@ -164,7 +163,6 @@ def gameplay():
 
     Cactus.containers = cacti
     fire_Cactus.containers = fire_cacti
-    # Cactus.containers = big_cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
@@ -401,7 +399,6 @@ def gameplay():
                 playerDino.update()
                 cacti.update()
                 fire_cacti.update()
-                # big_cacti.update()
                 pteras.update()
                 clouds.update()
                 shield_items.update()
@@ -427,7 +424,6 @@ def gameplay():
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
                     fire_cacti.draw(screen)
-                    # big_cacti.draw(screen)
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
