@@ -18,7 +18,7 @@ def introscreen():
     temp_dino.isBlinking = True
     gameStart = False
     btnpush_interval = 500 #ms
-    
+
     ###IMGLOAD###
     #BACKGROUND IMG LOAD
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 10, 1, -1, -1, -1)
@@ -26,7 +26,7 @@ def introscreen():
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
-   
+
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
@@ -148,10 +148,11 @@ def gameplay():
     heart = HeartIndicator(life)
     speed_indicator = Scoreboard(width * 0.12, height * 0.15)
     counter = 0
-    
+
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
+    fire_cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
@@ -161,6 +162,7 @@ def gameplay():
     highjump_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
+    fire_Cactus.containers = fire_cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
@@ -253,6 +255,26 @@ def gameplay():
                         if immune_time - collision_time > collision_immune_time:
                             playerDino.collision_immune = False
 
+                for f in fire_cacti:
+                    f.movement[0] = -1 * gamespeed
+                    if not playerDino.collision_immune:
+                        if pygame.sprite.collide_mask(playerDino, f):
+                            playerDino.collision_immune = True
+                            life -= 1
+                            collision_time = pygame.time.get_ticks()
+                            if life == 0:
+                                playerDino.isDead = True
+                            if pygame.mixer.get_init() is not None:
+                                die_sound.play()
+
+                    elif not playerDino.isSuper:
+                        immune_time = pygame.time.get_ticks()
+                        if immune_time - collision_time > collision_immune_time:
+                            playerDino.collision_immune = False
+
+
+
+
                 for p in pteras:
                     p.movement[0] = -1 * gamespeed
                     if not playerDino.collision_immune:
@@ -332,6 +354,12 @@ def gameplay():
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
+                if len(fire_cacti) < 2:
+                    for l in last_obstacle:
+                        if l.rect.right < width * 0.7 and random.randrange(0, 250) == 10:
+                            last_obstacle.empty()
+                            last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
+
                 if len(pteras) == 0 and random.randrange(0, 300) == 10 and counter > 300:
                     for l in last_obstacle:
                         if l.rect.right < width * 0.8:
@@ -367,6 +395,7 @@ def gameplay():
 
                 playerDino.update()
                 cacti.update()
+                fire_cacti.update()
                 pteras.update()
                 clouds.update()
                 shield_items.update()
@@ -391,6 +420,7 @@ def gameplay():
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
+                    fire_cacti.draw(screen)
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
@@ -407,7 +437,7 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
-                        
+
                 if counter % speed_up_limit_count == speed_up_limit_count - 1:
                     new_ground.speed -= 1
                     gamespeed += 1
