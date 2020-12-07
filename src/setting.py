@@ -5,6 +5,8 @@ import pygame
 from pygame import *
 
 
+
+
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 gamername=''
@@ -13,6 +15,7 @@ FPS = 60
 gravity = 0.65
 font = pygame.font.Font('DungGeunMo.ttf', 32)
 typescore_font = pygame.font.Font('DungGeunMo.ttf', 50)
+full_screen=False
 
 black = (0,0,0)
 white = (255,255,255)
@@ -136,12 +139,13 @@ def disp_intro_buttons(btn_gamestart,btn_board,btn_credit):
     
 
 def checkscrsize(eventw, eventh):
-    if (eventw < width and eventh < height) or eventw < width or eventh < height: #최소해상도
-        resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
-    else:
-        if eventw/eventh!=width/height: #고정화면비
-            adjusted_height=int(eventw/(width/height))
-            resized_screen = pygame.display.set_mode((eventw,adjusted_height), RESIZABLE)
+    if not full_screen:
+        if (eventw < width and eventh < height) or eventw < width or eventh < height: #최소해상도
+            resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+        else:
+            if eventw/eventh!=width/height: #고정화면비
+                adjusted_height=int(eventw/(width/height))
+                resized_screen = pygame.display.set_mode((eventw,adjusted_height), RESIZABLE)
 
 
 def extractDigits(number):

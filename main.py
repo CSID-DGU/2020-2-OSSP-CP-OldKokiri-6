@@ -468,11 +468,16 @@ def gameplay():
 
 def board():
     global resized_screen
-    screen_board = pygame.surface.Surface((resized_screen.get_width(), resized_screen.get_height()*2))
     gameQuit = False
     scroll_y=0
+    max_per_screen=10
     results = db.query_db("select username, score from user order by score desc;")
-
+    screen_board_height = resized_screen.get_height()+(len(results)//max_per_screen)*resized_screen.get_height()
+    screen_board = pygame.surface.Surface((
+        resized_screen.get_width(),
+        screen_board_height
+        ))
+    
     title_image, title_rect = load_image("ranking.png", 360, 75, -1)
     title_rect.centerx = width * 0.5
     title_rect.centery = height * 0.2
@@ -499,9 +504,11 @@ def board():
                     if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
                         gameQuit = True
                         introscreen()
+                    if event.key == pygame.K_UP: scroll_y = min(scroll_y + 15, 0)
+                    if event.key == pygame.K_DOWN: scroll_y = max(scroll_y - 15, -(len(results)//max_per_screen)*scr_size[1])
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 4: scroll_y = min(scroll_y + 15, 0)
-                    if event.button == 5: scroll_y = max(scroll_y - 15, -resized_screen.get_height())
+                    if event.button == 5: scroll_y = max(scroll_y - 15, -(len(results)//max_per_screen)*scr_size[1])
                     if event.button == 1:
                         gameQuit = True
                         introscreen()
