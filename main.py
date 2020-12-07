@@ -5,9 +5,9 @@ from src.dino import *
 from src.obstacle import *
 from src.item import *
 from src.interface import *
-import db.db_interface as dbi
+from db.db_interface import InterfDB
 
-db = dbi.InterfDB("db/score.db")
+db = InterfDB("db/score.db")
 
 
 def introscreen():
