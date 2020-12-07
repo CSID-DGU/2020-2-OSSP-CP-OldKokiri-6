@@ -349,6 +349,7 @@ def gameplay():
                 LIFE_INTERVAL = 1000
                 SLOW_INTERVAL = 1000
                 HIGHJUMP_INTERVAL = 300
+                OBJECT_REFRESH_LINE = width * 0.8
                 MAGIC_NUM = 10
 
                 if len(cacti) < 2:
@@ -357,19 +358,19 @@ def gameplay():
                         last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
                     else:
                         for l in last_obstacle:
-                            if l.rect.right < width * 0.7 and random.randrange(CACTUS_INTERVAL) == MAGIC_NUM:
+                            if l.rect.right < OBJECT_REFRESH_LINE and random.randrange(CACTUS_INTERVAL) == MAGIC_NUM:
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
                 if len(fire_cacti) < 2:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.7 and random.randrange(CACTUS_INTERVAL*5) == MAGIC_NUM:
+                        if l.rect.right < OBJECT_REFRESH_LINE and random.randrange(CACTUS_INTERVAL*5) == MAGIC_NUM:
                             last_obstacle.empty()
                             last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
 
                 if len(pteras) == 0 and random.randrange(PTERA_INTERVAL) == MAGIC_NUM and counter > PTERA_INTERVAL:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(Ptera(gamespeed, ptera_size[0], ptera_size[1]))
 
@@ -378,25 +379,25 @@ def gameplay():
 
                 if len(shield_items) == 0 and random.randrange(SHIELD_INTERVAL) == MAGIC_NUM and counter > SHIELD_INTERVAL:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(ShieldItem(gamespeed, object_size[0], object_size[1]))
 
                 if len(life_items) == 0 and random.randrange(LIFE_INTERVAL) == MAGIC_NUM and counter > LIFE_INTERVAL*2:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, object_size[0], object_size[1]))
 
                 if len(slow_items) == 0 and random.randrange(SLOW_INTERVAL) == MAGIC_NUM and counter > SLOW_INTERVAL:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(SlowItem(gamespeed, object_size[0], object_size[1]))
 
                 if len(highjump_items) == 0 and random.randrange(HIGHJUMP_INTERVAL) == MAGIC_NUM and counter > HIGHJUMP_INTERVAL:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(HighJumpItem(gamespeed, object_size[0], int(object_size[1] / 2)))
 
