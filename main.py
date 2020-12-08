@@ -5,9 +5,10 @@ from src.dino import *
 from src.obstacle import *
 from src.item import *
 from src.interface import *
-import db.db_interface as dbi
+from db.db_interface import InterfDB
 
-db = dbi.InterfDB("db/score.db")
+db = InterfDB("db/score.db")
+
 
 def introscreen():
     global on_pushtime; global off_pushtime
@@ -18,7 +19,7 @@ def introscreen():
     temp_dino.isBlinking = True
     gameStart = False
     btnpush_interval = 500 #ms
-    
+
     ###IMGLOAD###
     #BACKGROUND IMG LOAD
     temp_ground, temp_ground_rect = load_sprite_sheet('ground.png', 10, 1, -1, -1, -1)
@@ -26,7 +27,7 @@ def introscreen():
     Background, Background_rect = load_image('introscreenBG.png', width, height, -1)
     Background_rect.left = width*0
     Background_rect.bottom = height
-   
+
     r_btn_gamestart, r_btn_gamestart_rect = load_image('btn_start.png', 240*rwidth//width, 60*rheight//height, -1); btn_gamestart, btn_gamestart_rect = load_image('btn_start.png', 240, 60, -1)
     r_btn_board, r_btn_board_rect = load_image('btn_board.png', 240*rwidth//width, 60*rheight//height, -1); btn_board, btn_board_rect = load_image('btn_board.png', 240, 60, -1)
     r_btn_credit, r_btn_credit_rect = load_image('btn_credit.png', 240*rwidth//width, 60*rheight//height, -1); btn_credit, btn_credit_rect = load_image('btn_credit.png', 240, 60, -1)
@@ -148,10 +149,11 @@ def gameplay():
     heart = HeartIndicator(life)
     speed_indicator = Scoreboard(width * 0.12, height * 0.15)
     counter = 0
-    
+
     speed_text = font.render("SPEED", True, (15, 0, 0))
 
     cacti = pygame.sprite.Group()
+    fire_cacti = pygame.sprite.Group()
     pteras = pygame.sprite.Group()
     clouds = pygame.sprite.Group()
     last_obstacle = pygame.sprite.Group()
@@ -161,6 +163,7 @@ def gameplay():
     highjump_items = pygame.sprite.Group()
 
     Cactus.containers = cacti
+    fire_Cactus.containers = fire_cacti
     Ptera.containers = pteras
     Cloud.containers = clouds
     ShieldItem.containers = shield_items
@@ -253,6 +256,23 @@ def gameplay():
                         if immune_time - collision_time > collision_immune_time:
                             playerDino.collision_immune = False
 
+                for f in fire_cacti:
+                    f.movement[0] = -1 * gamespeed
+                    if not playerDino.collision_immune:
+                        if pygame.sprite.collide_mask(playerDino, f):
+                            playerDino.collision_immune = True
+                            life -= 1
+                            collision_time = pygame.time.get_ticks()
+                            if life == 0:
+                                playerDino.isDead = True
+                            if pygame.mixer.get_init() is not None:
+                                die_sound.play()
+
+                    elif not playerDino.isSuper:
+                        immune_time = pygame.time.get_ticks()
+                        if immune_time - collision_time > collision_immune_time:
+                            playerDino.collision_immune = False
+
                 for p in pteras:
                     p.movement[0] = -1 * gamespeed
                     if not playerDino.collision_immune:
@@ -314,7 +334,7 @@ def gameplay():
 
                 for h in highjump_items:
                     h.movement[0] = -1 * gamespeed
-                    if pygame.sprite.collide_mask(playerDino, h):
+                    if pygame.sprite.collide_mask(playerDino, h) and playerDino.rect.bottom != int(height * 0.98):
                         if pygame.mixer.get_init() is not None:
                             jump_sound.play()
                         playerDino.isJumping = True
@@ -322,51 +342,71 @@ def gameplay():
                     if h.rect.right < 0:
                         h.kill()
 
+                CACTUS_INTERVAL = 50
+                PTERA_INTERVAL = 300
+                CLOUD_INTERVAL = 300
+                SHIELD_INTERVAL = 500
+                LIFE_INTERVAL = 1000
+                SLOW_INTERVAL = 1000
+                HIGHJUMP_INTERVAL = 300
+                OBJECT_REFRESH_LINE = width * 0.8
+                MAGIC_NUM = 10
+
                 if len(cacti) < 2:
                     if len(cacti) == 0:
                         last_obstacle.empty()
                         last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
                     else:
                         for l in last_obstacle:
-                            if l.rect.right < width * 0.7 and random.randrange(0, 50) == 10:
+                            if l.rect.right < OBJECT_REFRESH_LINE and random.randrange(CACTUS_INTERVAL) == MAGIC_NUM:
                                 last_obstacle.empty()
                                 last_obstacle.add(Cactus(gamespeed, object_size[0], object_size[1]))
 
-                if len(pteras) == 0 and random.randrange(0, 300) == 10 and counter > 300:
+                if len(fire_cacti) < 2:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE and random.randrange(CACTUS_INTERVAL*5) == MAGIC_NUM:
+                            last_obstacle.empty()
+                            last_obstacle.add(fire_Cactus(gamespeed, object_size[0], object_size[1]))
+
+                if len(pteras) == 0 and random.randrange(PTERA_INTERVAL) == MAGIC_NUM and counter > PTERA_INTERVAL:
+                    for l in last_obstacle:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(Ptera(gamespeed, ptera_size[0], ptera_size[1]))
 
-                if len(clouds) < 5 and random.randrange(0, 300) == 10:
+                if len(clouds) < 5 and random.randrange(CLOUD_INTERVAL) == MAGIC_NUM:
                     Cloud(width, random.randrange(height / 5, height / 2))
 
-                if len(shield_items) == 0 and random.randrange(0, 500) == 10 and counter > 300:
+                if len(shield_items) == 0 and random.randrange(SHIELD_INTERVAL) == MAGIC_NUM and counter > SHIELD_INTERVAL:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(ShieldItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(life_items) == 0 and random.randrange(0, 1000) == 10 and counter > 2000:
+                if len(life_items) == 0 and random.randrange(LIFE_INTERVAL) == MAGIC_NUM and counter > LIFE_INTERVAL*2:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(LifeItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(slow_items) == 0 and random.randrange(0, 1000) == 10 and counter > 1000:
+                if len(slow_items) == 0 and random.randrange(SLOW_INTERVAL) == MAGIC_NUM and counter > SLOW_INTERVAL:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(SlowItem(gamespeed, object_size[0], object_size[1]))
 
-                if len(highjump_items) == 0 and random.randrange(0, 300) == 100 and counter > 300:
+                if len(highjump_items) == 0 and random.randrange(HIGHJUMP_INTERVAL) == MAGIC_NUM and counter > HIGHJUMP_INTERVAL:
                     for l in last_obstacle:
-                        if l.rect.right < width * 0.8:
+                        if l.rect.right < OBJECT_REFRESH_LINE:
                             last_obstacle.empty()
                             last_obstacle.add(HighJumpItem(gamespeed, object_size[0], int(object_size[1] / 2)))
 
+                            last_obstacle.empty()
+                            last_obstacle.add(Cactus(gamespeed, int(object_size[0]*2.5), int(object_size[1]*1.5)))
+
                 playerDino.update()
                 cacti.update()
+                fire_cacti.update()
                 pteras.update()
                 clouds.update()
                 shield_items.update()
@@ -391,6 +431,7 @@ def gameplay():
                         highsc.draw()
                         screen.blit(HI_image, HI_rect)
                     cacti.draw(screen)
+                    fire_cacti.draw(screen)
                     pteras.draw(screen)
                     shield_items.draw(screen)
                     life_items.draw(screen)
@@ -407,7 +448,7 @@ def gameplay():
                     pygame.mixer.music.stop() #죽으면 배경음악 멈춤
                     if playerDino.score > high_score:
                         high_score = playerDino.score
-                        
+
                 if counter % speed_up_limit_count == speed_up_limit_count - 1:
                     new_ground.speed -= 1
                     gamespeed += 1
@@ -436,17 +477,23 @@ def gameplay():
                             gameOver = False
                             gameQuit = True
                             typescore(playerDino.score)
-                            db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
-                            db.commit()
-                            board()
+                            if not db.is_limit_data(playerDino.score):
+                                db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
+                                db.commit()
+                                board()
+                            else:
+                                board()
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         gameOver = False
                         gameQuit = True
                         typescore(playerDino.score)
-                        db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
-                        db.commit()
-                        board()
+                        if not db.is_limit_data(playerDino.score):
+                            db.query_db(f"insert into user(username, score) values ('{gamername}', '{playerDino.score}');")
+                            db.commit()
+                            board()
+                        else:
+                            board()
 
                     if event.type == pygame.VIDEORESIZE:
                         checkscrsize(event.w, event.h)
@@ -470,7 +517,6 @@ def board():
     global resized_screen
     gameQuit = False
     scroll_y=0
-    max_per_screen=10
     results = db.query_db("select username, score from user order by score desc;")
     screen_board_height = resized_screen.get_height()+(len(results)//max_per_screen)*resized_screen.get_height()
     screen_board = pygame.surface.Surface((
@@ -489,14 +535,17 @@ def board():
             screen_board.fill(background_col)
             screen_board.blit(title_image, title_rect)
             for i, result in enumerate(results):
+                top_i_surface = font.render(f"TOP {i + 1}", True, black)
                 name_inform_surface = font.render("Name", True, black)
                 score_inform_surface = font.render("Score", True, black)
                 score_surface = font.render(str(result['score']), True, black)
                 txt_surface = font.render(result['username'], True, black)
-                screen_board.blit(name_inform_surface, (width * 0.3, height * 0.30))
-                screen_board.blit(score_inform_surface, (width * 0.5, height * 0.30))
-                screen_board.blit(score_surface, (width * 0.5, height * (0.45 + 0.1 * i)))
-                screen_board.blit(txt_surface, (width*0.3, height * (0.45 + 0.1 * i)))
+
+                screen_board.blit(top_i_surface, (width * 0.25, height * (0.55 + 0.1 * i)))
+                screen_board.blit(name_inform_surface, (width * 0.4, height * 0.40))
+                screen_board.blit(score_inform_surface, (width * 0.6, height * 0.40))
+                screen_board.blit(txt_surface, (width*0.4, height * (0.55 + 0.1 * i)))
+                screen_board.blit(score_surface, (width * 0.6, height * (0.55 + 0.1 * i)))
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     gameQuit = True
@@ -589,6 +638,7 @@ def pausing():
     pygame.quit()
     quit()
 
+
 def typescore(score):
     global resized_screen
     global gamername
@@ -612,8 +662,7 @@ def typescore(score):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
-                # if len(text)==letternum_restriction:
-                #     done = True
+                introscreen()
             if event.type == pygame.KEYDOWN:
                 #if active:
                 if event.key == pygame.K_RETURN:
@@ -643,6 +692,7 @@ def typescore(score):
         pygame.display.flip()
         clock.tick(FPS)
 
+
 def credit():
     global resized_screen
     done = False
@@ -652,8 +702,6 @@ def credit():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
-                # if len(text)==letternum_restriction:
-                #     done = True
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -674,11 +722,13 @@ def credit():
     pygame.quit()
     quit()
 
+
 def main():
     db.init_db()
     isGameQuit = introscreen()
     if not isGameQuit:
         introscreen()
+
 
 if __name__ == "__main__":
     main()
