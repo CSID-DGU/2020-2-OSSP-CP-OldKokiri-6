@@ -517,6 +517,7 @@ def board():
     global resized_screen
     gameQuit = False
     scroll_y=0
+    max_per_screen = 10
     results = db.query_db("select username, score from user order by score desc;")
     screen_board_height = resized_screen.get_height()+(len(results)//max_per_screen)*resized_screen.get_height()
     screen_board = pygame.surface.Surface((
