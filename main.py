@@ -200,7 +200,7 @@ def gameplay():
                         gameOver = True
 
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:  # 스페이스 누르는 시점에 공룡이 땅에 닿아있으면 점프한다.
+                        if event.key == pygame.K_SPACE or event.key == pygame.K_UP:  # 스페이스 누르는 시점에 공룡이 땅에 닿아있으면 점프한다.
                             if playerDino.rect.bottom == int(0.98 * height):
                                 playerDino.isJumping = True
                                 if pygame.mixer.get_init() != None:
@@ -300,6 +300,8 @@ def gameplay():
                             playerDino.isSuper = True
                             s.kill()
                             item_time = pygame.time.get_ticks()
+                        elif s.rect.right < 0:
+                            s.kill()
                 else:
                     for s in shield_items:
                         s.movement[0] = -1 * gamespeed
@@ -310,6 +312,8 @@ def gameplay():
                             playerDino.isSuper = True
                             s.kill()
                             item_time = pygame.time.get_ticks()
+                        elif s.rect.right < 0:
+                            s.kill()
 
                     if pygame.time.get_ticks() - item_time > shield_time:
                         playerDino.collision_immune = False
@@ -322,6 +326,8 @@ def gameplay():
                             checkPoint_sound.play()
                         life += 1
                         l.kill()
+                    elif l.rect.right < 0:
+                        l.kill()
 
                 for k in slow_items:
                     k.movement[0] = -1 * gamespeed
@@ -330,6 +336,8 @@ def gameplay():
                             checkPoint_sound.play()
                         gamespeed -= 1
                         new_ground.speed += 1
+                        k.kill()
+                    elif k.rect.right < 0:
                         k.kill()
 
                 for h in highjump_items:
