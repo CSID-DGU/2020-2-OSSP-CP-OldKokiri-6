@@ -5,6 +5,8 @@ import pygame
 from pygame import *
 
 
+
+
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 gamername=''
@@ -12,7 +14,8 @@ scr_size = (width, height) = (900, 300)
 FPS = 60
 gravity = 0.65
 font = pygame.font.Font('DungGeunMo.ttf', 32)
-typescore_font = pygame.font.Font('DungGeunMo.ttf', 50)
+full_screen=False
+monitor_size = (monitor_width, monitor_height) = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
 black = (0,0,0)
 white = (255,255,255)
@@ -143,6 +146,10 @@ def checkscrsize(eventw, eventh):
             adjusted_height=int(eventw/(width/height))
             resized_screen = pygame.display.set_mode((eventw,adjusted_height), RESIZABLE)
 
+def full_screen_issue():
+    global scr_size
+    resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
+    resized_screen = pygame.display.set_mode((scr_size), RESIZABLE)
 
 def extractDigits(number):
     if number > -1:
@@ -157,3 +164,11 @@ def extractDigits(number):
             digits.append(0)
         digits.reverse()
         return digits
+
+def resize(name, w, h, color):
+        global width, height, resized_screen
+        return (name, w*resized_screen.get_width()//width, h*resized_screen.get_height()//height, color)
+
+def textsize(size):
+    font = pygame.font.Font('DungGeunMo.ttf', size)
+    return font
